@@ -1,0 +1,1005 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Solo Leveling - Perfil de Cazador</title>
+    <link rel="stylesheet" href="css/style.css" />
+    <link
+      rel="icon"
+      type="image/png"
+      href="img/logo_app_proyecto__1_-removebg-preview.png"
+    />
+    <style>
+      /* Profile Specific Inline Styles (to be moved to css later) */
+      .profile-header {
+        padding: 120px 0 50px;
+        background: linear-gradient(
+          to bottom,
+          rgba(5, 5, 5, 0.9),
+          var(--color-bg)
+        );
+        text-align: center;
+      }
+
+      .hunter-card {
+        background: rgba(20, 20, 20, 0.8);
+        border: 2px solid var(--color-primary);
+        border-radius: 10px;
+        padding: 30px;
+        max-width: 800px;
+        margin: 0 auto;
+        position: relative;
+        box-shadow: 0 0 40px rgba(138, 43, 226, 0.15);
+        display: grid;
+        grid-template-columns: 1fr 2fr;
+        gap: 30px;
+        align-items: start;
+      }
+
+      .hunter-card::before {
+        content: "HUNTER LICENSE";
+        position: absolute;
+        top: -12px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: var(--color-bg);
+        padding: 0 15px;
+        color: var(--color-primary);
+        font-family: var(--font-heading);
+        font-weight: bold;
+        letter-spacing: 2px;
+      }
+
+      .avatar-section {
+        text-align: center;
+      }
+
+      .avatar {
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        border: 3px solid var(--color-accent);
+        margin: 0 auto 15px;
+        background: #333;
+        /* Placeholder */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+      }
+
+      .avatar img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .rank-badge {
+        font-size: 3rem;
+        font-weight: bold;
+        color: var(--color-primary);
+        text-shadow: 0 0 15px var(--color-primary);
+        font-family: var(--font-heading);
+      }
+
+      .stats-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 15px;
+        text-align: left;
+      }
+
+      .stat-item {
+        background: rgba(255, 255, 255, 0.03);
+        padding: 10px;
+        border-radius: 5px;
+        border-left: 3px solid var(--color-accent);
+      }
+
+      .stat-label {
+        font-size: 0.8rem;
+        color: var(--color-text-muted);
+        text-transform: uppercase;
+      }
+
+      .stat-value {
+        font-size: 1.1rem;
+        font-weight: bold;
+      }
+
+      .job-title {
+        grid-column: 1 / -1;
+        font-size: 1.5rem;
+        margin-bottom: 20px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      .action-section {
+        margin-top: 50px;
+        text-align: center;
+      }
+
+      #daily-quest {
+        background: rgba(30, 10, 30, 0.6);
+        border: 1px dashed var(--color-primary);
+        padding: 30px;
+        border-radius: 10px;
+        margin-top: 30px;
+        display: none;
+        /* Hidden by default */
+      }
+
+      .quest-title {
+        color: var(--color-accent);
+        margin-bottom: 15px;
+      }
+
+      @media (max-width: 768px) {
+        .hunter-card {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      /* --- EXERCISE MODAL STYLE (SOLO LEVELING THEME) --- */
+      .modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.85); /* Dark overlay */
+        backdrop-filter: blur(5px);
+        z-index: 2000;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        opacity: 0; /* For fade in */
+        transition: opacity 0.3s ease;
+      }
+      .modal-overlay.active {
+        display: flex;
+        opacity: 1;
+      }
+      .sl-modal {
+        background: rgba(10, 10, 20, 0.95);
+        border: 1px solid var(--color-primary);
+        box-shadow:
+          0 0 30px rgba(0, 229, 255, 0.2),
+          inset 0 0 20px rgba(0, 0, 0, 0.8);
+        width: 90%;
+        max-width: 800px;
+        max-height: 90vh;
+        overflow-y: auto;
+        border-radius: 8px;
+        position: relative;
+        transform: scale(0.9);
+        transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      }
+      .modal-overlay.active .sl-modal {
+        transform: scale(1);
+      }
+
+      /* Header with "System" look */
+      .modal-header {
+        padding: 20px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: linear-gradient(90deg, rgba(0, 229, 255, 0.1), transparent);
+      }
+      .modal-title {
+        color: var(--color-primary);
+        font-family: var(--font-heading);
+        font-size: 1.5rem;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        text-shadow: 0 0 10px var(--color-primary);
+      }
+      .close-modal {
+        background: none;
+        border: none;
+        color: #fff;
+        font-size: 2rem;
+        cursor: pointer;
+        line-height: 1;
+        transition: color 0.3s;
+      }
+      .close-modal:hover {
+        color: var(--color-accent);
+      }
+
+      .modal-body {
+        padding: 30px;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 30px;
+      }
+      @media (max-width: 768px) {
+        .modal-body {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      .media-container {
+        border: 1px solid #333;
+        border-radius: 4px;
+        overflow: hidden;
+        background: #000;
+        min-height: 200px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .media-container img {
+        width: 100%;
+        height: auto;
+        object-fit: cover;
+        display: block;
+      }
+      .exercise-info h4 {
+        color: var(--color-accent);
+        margin-bottom: 10px;
+        font-size: 1.1rem;
+        border-left: 3px solid var(--color-accent);
+        padding-left: 10px;
+      }
+      .exercise-info p {
+        color: #ddd;
+        font-size: 0.95rem;
+        line-height: 1.6;
+        margin-bottom: 20px;
+      }
+      .exercise-meta {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 20px;
+      }
+      .meta-tag {
+        background: rgba(255, 255, 255, 0.1);
+        padding: 5px 10px;
+        border-radius: 4px;
+        font-size: 0.8rem;
+        color: var(--color-text-muted);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- Header -->
+    <header>
+      <div class="container">
+        <nav>
+          <a href="index.html" class="logo-link">
+            <img
+              src="img/logo_app_proyecto__1_-removebg-preview.png"
+              alt="Solo Leveling Logo"
+              class="logo"
+            />
+          </a>
+          <ul class="nav-links">
+            <li><a href="login.html">Inicio Sesión</a></li>
+            <li><a href="#" onclick="logout()">Cerrar Sesión</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <section class="profile-header">
+      <div class="container fade-in-up">
+        <h1 class="section-title">Estado del Jugador</h1>
+
+        <div class="hunter-card">
+          <div class="avatar-section">
+            <div class="avatar">
+              <!-- Placeholder or uploaded image -->
+              <span style="font-size: 3rem">👤</span>
+            </div>
+            <div class="rank-badge" id="player-rank">E</div>
+            <p style="color: var(--color-text-muted)">RANGO</p>
+          </div>
+
+          <div class="stats-grid">
+            <div class="job-title">
+              <span style="color: var(--color-text-muted)">NOMBRE:</span>
+              <span id="player-name">Cargando...</span><br />
+              <span style="color: var(--color-text-muted); font-size: 1rem"
+                >CLASE:</span
+              >
+              <span id="player-job" style="color: var(--color-accent)"
+                >Novato</span
+              >
+            </div>
+
+            <div class="stat-item">
+              <div class="stat-label">Nivel</div>
+              <div class="stat-value" id="player-level">1</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-label">Fuerza (STR)</div>
+              <div class="stat-value" id="stat-str">10</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-label">Agilidad (AGI)</div>
+              <div class="stat-value" id="stat-agi">10</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-label">Vitalidad (VIT)</div>
+              <div class="stat-value" id="stat-vit">10</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-label">Fatiga</div>
+              <div class="stat-value">0%</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-label">Exp</div>
+              <div class="stat-value" id="stat-exp">0 / 100</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="action-section">
+          <!-- Sprint 2: This button will trigger the generator -->
+
+          <div style="margin-bottom: 20px">
+            <label
+              for="quest-focus"
+              style="color: var(--color-text-muted); font-size: 0.9rem"
+              >ENFOQUE DE ENTRENAMIENTO</label
+            >
+            <select
+              id="quest-focus"
+              style="
+                background: rgba(0, 0, 0, 0.5);
+                border: 1px solid var(--color-primary);
+                color: white;
+                padding: 10px;
+                border-radius: 5px;
+                margin-top: 5px;
+              "
+            >
+              <option value="Balanced">⚖️ Equilibrado (General)</option>
+              <option value="Strength">💪 Fuerza (Strength)</option>
+              <option value="Agility">⚡ Agilidad (Explosive/Cardio)</option>
+              <option value="Vitality">❤️ Vitalidad (Stamina)</option>
+            </select>
+          </div>
+
+          <button
+            id="generate-quest-btn"
+            class="btn btn-accent"
+            style="font-size: 1.2rem; padding: 15px 40px"
+          >
+            GENERAR MISIÓN DIARIA
+          </button>
+
+          <div id="daily-quest" class="fade-in-up">
+            <h3 class="quest-title">📜 MISIÓN DIARIA: EL ENTRENAMIENTO</h3>
+            <p style="margin-bottom: 20px">
+              Completa los siguientes objetivos para obtener recompensas.
+            </p>
+            <div id="quest-content">
+              <!-- Routine items will go here -->
+              <p>Iniciando sistema...</p>
+            </div>
+            <button class="btn" style="margin-top: 20px">
+              Completar Misión
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- EXERCISE DETAILS MODAL -->
+    <div id="exercise-modal" class="modal-overlay">
+      <div class="sl-modal">
+        <div class="modal-header">
+          <h2 class="modal-title" id="modal-title">NOMBRE EJERCICIO</h2>
+          <button class="close-modal" onclick="closeModal()">&times;</button>
+        </div>
+        <div class="modal-body">
+          <!-- Left: Media -->
+          <div class="media-container">
+            <!-- Image/GIF -->
+            <img
+              id="modal-image"
+              src=""
+              alt="Demostración"
+              style="display: none"
+            />
+            <!-- Video Embed -->
+            <div
+              id="modal-video-container"
+              style="
+                position: relative;
+                padding-bottom: 56.25%;
+                height: 0;
+                overflow: hidden;
+                display: none;
+              "
+            >
+              <iframe
+                id="modal-video"
+                style="
+                  position: absolute;
+                  top: 0;
+                  left: 0;
+                  width: 100%;
+                  height: 100%;
+                "
+                src=""
+                frameborder="0"
+                allowfullscreen
+              ></iframe>
+            </div>
+          </div>
+
+          <!-- Right: Info -->
+          <div class="exercise-info">
+            <div class="exercise-meta">
+              <span class="meta-tag" id="modal-rank">Rango: E</span>
+              <span class="meta-tag" id="modal-type">Fuerza</span>
+              <span class="meta-tag" id="modal-muscle">Pecho</span>
+            </div>
+
+            <h4>Instrucciones</h4>
+            <p id="modal-instructions">
+              Descripción detallada del ejercicio...
+            </p>
+
+            <h4>Consejo del Sistema</h4>
+            <p style="color: #aaa; font-style: italic">
+              "Mantén la forma correcta para maximizar el crecimiento."
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="js/main.js"></script>
+    <script type="module">
+      import { supabase } from "./js/supabase-client.js";
+      import { RoutineGenerator } from "./js/generator.js";
+      import { Gamification } from "./js/gamification.js";
+      import "./js/auth-bridge.js";
+
+      // FALLBACK MEDIA DICTIONARY (Since DB updates via anon key are blocked by RLS)
+      const MEDIA_MAP = [
+        {
+          keywords: ["pushup", "flexion", "push-up"],
+          video: "https://www.youtube.com/embed/IODxDxX7PCQ",
+          image: "https://media.giphy.com/media/wM0IbbkNwuZ2M/giphy.gif",
+        },
+        {
+          keywords: ["squat", "sentadilla"],
+          video: "https://www.youtube.com/embed/gT19p3u2o7U",
+          image: "https://media.giphy.com/media/l41YiK4f2H1lqGVra/giphy.gif",
+        },
+        {
+          keywords: ["pullup", "pull-up", "dominada"],
+          video: "https://www.youtube.com/embed/eGo4IYlbE5g",
+          image: "https://media.giphy.com/media/3o7TKSjRrfPHjTwqUO/giphy.gif",
+        },
+        {
+          keywords: ["plank", "plancha"],
+          video: "https://www.youtube.com/embed/p23QW9B6vY8",
+          image: "https://media.giphy.com/media/xT5LMCvYDfT212nWbP/giphy.gif",
+        },
+        {
+          keywords: ["lunge", "zancada"],
+          video: "https://www.youtube.com/embed/Q0PCm1gP3_k",
+          image: "https://media.giphy.com/media/l3q2Q3sUEkEqgANcfw/giphy.gif",
+        },
+        {
+          keywords: ["burpee"],
+          video: "https://www.youtube.com/embed/auBLPXO8Fww",
+          image: "https://media.giphy.com/media/WCdyi4X0y1mDe/giphy.gif",
+        },
+        {
+          keywords: ["run", "correr", "trote"],
+          video: "https://www.youtube.com/embed/_kGESn8ArrU",
+          image: "https://media.giphy.com/media/l2Jhv9GMcoVlX8rve/giphy.gif",
+        },
+        {
+          keywords: ["crunch", "abdominal", "situp", "sit-up"],
+          video: "https://www.youtube.com/embed/u6ZelKyUM6g",
+          image: "https://media.giphy.com/media/13Eq0yN0l5gBCE/giphy.gif",
+        },
+        {
+          keywords: ["bicep", "curl", "mancuerna"],
+          video: "https://www.youtube.com/embed/kwG2ipFRgfo",
+          image: "https://media.giphy.com/media/tITfss8cqzZO/giphy.gif",
+        },
+        {
+          keywords: ["bench", "press", "banca", "pecho"],
+          video: "https://www.youtube.com/embed/0k7kGgE2G8I",
+          image: "https://media.giphy.com/media/l41YiK4f2H1lqGVra/giphy.gif",
+        },
+        {
+          keywords: ["pulldown", "polea", "jalon"],
+          video: "https://www.youtube.com/embed/jx1k0A1pWiO",
+          image: "https://media.giphy.com/media/3o7TKSjRrfPHjTwqUO/giphy.gif",
+        },
+        {
+          keywords: ["leg press", "prensa"],
+          video: "https://www.youtube.com/embed/s4Q1U71Fw44",
+          image: "https://media.giphy.com/media/l3q2Q3sUEkEqgANcfw/giphy.gif",
+        },
+        {
+          keywords: ["row", "remo"],
+          video: "https://www.youtube.com/embed/GZqE4X1Io_E",
+          image: "https://media.giphy.com/media/3o7TKSjRrfPHjTwqUO/giphy.gif",
+        },
+        {
+          keywords: ["jump", "squat", "salto"],
+          video: "https://www.youtube.com/embed/FOO61sDS3Xz",
+          image: "https://media.giphy.com/media/l41YiK4f2H1lqGVra/giphy.gif",
+        },
+        {
+          keywords: ["close", "grip", "triceps", "cerrada"],
+          video: "https://www.youtube.com/embed/kL-y0q_0eLg",
+          image: "https://media.giphy.com/media/wM0IbbkNwuZ2M/giphy.gif",
+        },
+        {
+          keywords: ["side", "lado", "archer"],
+          video: "https://www.youtube.com/embed/s5R832pQ64o",
+          image: "https://media.giphy.com/media/wM0IbbkNwuZ2M/giphy.gif",
+        },
+        {
+          keywords: ["deadlift", "peso muerto"],
+          video: "https://www.youtube.com/embed/5rG4nB_E-Sg",
+          image: "https://media.giphy.com/media/p2j_b4F0L2o/giphy.gif",
+        },
+        {
+          keywords: ["snatch", "arrancada"],
+          video: "https://www.youtube.com/embed/s_fQ_r_gqX8",
+          image: "https://media.giphy.com/media/s_fQ_r_gqX8/giphy.gif",
+        },
+      ];
+
+      function getMediaForExercise(name) {
+        if (!name) return { video: null, image: null };
+        const lowerName = name.toLowerCase();
+
+        for (const item of MEDIA_MAP) {
+          if (item.keywords.some((k) => lowerName.includes(k))) {
+            return { video: item.video, image: item.image };
+          }
+        }
+        return { video: null, image: null };
+      }
+
+      // Toggle Guide Function -> NOW OPENS MODAL
+      window.viewGuide = (index) => {
+        // Get data from global array populated during render
+        if (
+          !window.currentQuestExercises ||
+          !window.currentQuestExercises[index]
+        )
+          return;
+
+        const ex = window.currentQuestExercises[index];
+
+        // Populate Modal
+        document.getElementById("modal-title").textContent =
+          ex.name || "Ejercicio Desconocido";
+        document.getElementById("modal-rank").textContent =
+          `Rango: ${ex.rank || "E"}`;
+        document.getElementById("modal-type").textContent =
+          ex.type || "General";
+        document.getElementById("modal-muscle").textContent =
+          ex.muscle_group || "General";
+
+        const instructions = ex.instructions
+          ? ex.instructions
+          : "Realiza el movimiento de forma controlada. Mantén la tensión en el músculo objetivo.";
+        document.getElementById("modal-instructions").innerText = instructions;
+
+        // Media Handling
+        const img = document.getElementById("modal-image");
+        const vidCont = document.getElementById("modal-video-container");
+        const vidFrame = document.getElementById("modal-video");
+
+        // Reset
+        img.style.display = "none";
+        vidCont.style.display = "none";
+
+        // Resolve Media (DB > Fallback)
+        let videoUrl = ex.video_url;
+        let imageUrl = ex.image_url;
+
+        if (!videoUrl || !imageUrl) {
+          const fallback = getMediaForExercise(ex.name);
+          if (!videoUrl) videoUrl = fallback.video;
+          if (!imageUrl) imageUrl = fallback.image;
+        }
+
+        // Show Image if exists
+        if (imageUrl) {
+          img.src = imageUrl;
+          img.style.display = "block";
+        } else {
+          // Use a cool generic fitness placeholder if absolutely nothing found
+          img.src =
+            "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?auto=format&fit=crop&w=400&q=80";
+          img.style.display = "block";
+        }
+
+        // Show Video if exists
+        if (videoUrl) {
+          vidFrame.src = videoUrl;
+          vidCont.style.display = "block";
+        }
+
+        // Show Modal via Class
+        document.getElementById("exercise-modal").classList.add("active");
+      };
+
+      window.closeModal = () => {
+        document.getElementById("exercise-modal").classList.remove("active");
+        // Stop video
+        document.getElementById("modal-video").src = "";
+      };
+
+      // Close on outside click
+      document
+        .getElementById("exercise-modal")
+        .addEventListener("click", (e) => {
+          if (e.target.id === "exercise-modal") window.closeModal();
+        });
+
+      // Profile Logic
+      document.addEventListener("DOMContentLoaded", async () => {
+        // Check Session
+        const {
+          data: { session },
+        } = await supabase.auth.getSession();
+
+        if (!session) {
+          alert("No se detectó sesión. Redirigiendo al inicio.");
+          window.location.href = "index.html";
+          return;
+        }
+
+        // Fetch Profile
+        const { data: profile, error } = await supabase
+          .from("profiles")
+          .select("*")
+          .eq("id", session.user.id)
+          .single();
+
+        if (error) {
+          console.error("Error fetching profile:", error);
+          alert("Error cargando perfil: " + error.message);
+          return;
+        }
+
+        // --- Render Profile Stats ---
+        const updateUI = (p) => {
+          document.getElementById("player-name").textContent =
+            p.username || "Desconocido";
+          document.getElementById("player-rank").textContent = p.rank || "E";
+          document.getElementById("player-level").textContent = p.level || 1;
+          document.getElementById("stat-str").textContent = p.strength || 10;
+          document.getElementById("stat-agi").textContent = p.agility || 10;
+          document.getElementById("stat-vit").textContent = p.vitality || 10;
+
+          // Job Title
+          let jobTitle = "Civil";
+          if (p.goal === "strength") jobTitle = "Guerrero (Fuerza)";
+          if (p.goal === "hypertrophy") jobTitle = "Tanque (Musculación)";
+          if (p.goal === "endurance") jobTitle = "Viajero (Cardio)";
+          document.getElementById("player-job").textContent =
+            p.hunter_class !== "Civilian" ? p.hunter_class : jobTitle;
+
+          // Update Exp & Fatigue UI
+          const currentXp = p.experience_points || 0;
+          const level = p.level || 1;
+          const prevLevelXp = (level - 1) * 100;
+          const xpInLevel = currentXp - prevLevelXp;
+
+          document.getElementById("stat-exp").textContent =
+            `${xpInLevel} / 100 XP (${currentXp} Total)`;
+
+          // Fatigue UI
+          const fatigue = p.fatigue || 0;
+          const fatigueElem = document.querySelector(
+            ".stat-item:nth-child(6) .stat-value",
+          ); // nth-child(6) is Fatigue
+          if (fatigueElem) {
+            fatigueElem.textContent = `${fatigue}%`;
+            fatigueElem.style.color = fatigue >= 90 ? "red" : "white";
+          }
+        };
+
+        // --- Passive Recovery Check ---
+        const amountRecovered = Gamification.calculatePassiveRecovery(
+          profile.updated_at,
+          profile.fatigue || 0,
+        );
+        if (amountRecovered > 0) {
+          const newFatigue = (profile.fatigue || 0) - amountRecovered;
+
+          // Optimistic Update
+          profile.fatigue = newFatigue;
+          alert(
+            `💤 Has descansado.\n\nRecuperaste ${amountRecovered}% de Fatiga por el tiempo transcurrido.`,
+          );
+
+          // Update DB in background
+          await supabase
+            .from("profiles")
+            .update({
+              fatigue: newFatigue,
+              updated_at: new Date(), // Reset timer
+            })
+            .eq("id", session.user.id);
+        }
+
+        updateUI(profile);
+
+        // --- Quest Generation ---
+        let currentQuestExercises = []; // Store rendered exercises
+        let currentQuestRoutineId = null;
+
+        // NEW: Reusable Render Function
+        const renderQuest = (quest) => {
+          const questBox = document.getElementById("daily-quest");
+          const questContent = document.getElementById("quest-content");
+
+          currentQuestExercises = quest.exercises;
+          currentQuestRoutineId = quest.routine_id;
+
+          // Check if already completed
+          if (quest.is_completed) {
+            alert("✅ Misión diaria completada. Mostrando historial.");
+            document.getElementById("complete-quest-btn").style.display =
+              "none";
+            questBox.classList.add("completed-quest");
+          } else {
+            questBox.classList.remove("completed-quest");
+          }
+
+          // Render Quest HTML
+          let html = `<h4 style="color:white; margin-bottom:10px;">${quest.title}</h4>`;
+          html += `<ul style="text-align:left; margin-bottom:15px; list-style:none; padding:0;">`;
+
+          if (quest.exercises.length === 0) {
+            html += `<li>No se encontraron ejercicios adecuados para tu rango.</li>`;
+          } else {
+            quest.exercises.forEach((ex, index) => {
+              const loc =
+                ex.location === "Home"
+                  ? "🏠"
+                  : ex.location === "Gym"
+                    ? "🏋️"
+                    : "🔄";
+
+              // Instructions & Media
+              const instructions = ex.instructions
+                ? ex.instructions.replace(/\n/g, "<br>")
+                : "Sigue las instrucciones estándar.";
+              const videoEmbed = ex.video_url
+                ? `<iframe width="100%" height="200" src="${ex.video_url}" frameborder="0" allowfullscreen style="border-radius:5px; margin-top:10px;"></iframe>`
+                : "";
+
+              // Disable checkboxes if completed
+              const disabledAttr = quest.is_completed ? "disabled checked" : "";
+
+              // Make exercises globally available for modal
+              window.currentQuestExercises = currentQuestExercises;
+
+              html += `<li style="margin-bottom:15px; border-bottom:1px solid #333; padding-bottom:10px;">
+                            <div style="display:flex; align-items:center;">
+                                <input type="checkbox" id="ex-${index}" data-index="${index}" style="transform: scale(1.5); margin-right: 15px; accent-color: var(--color-primary);" ${disabledAttr}>
+                                <div style="flex-grow:1;">
+                                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                                        <span>${loc} <strong>${ex.name}</strong></span>
+                                        <span style="color:var(--color-primary)">${ex.sets} x ${ex.reps}</span>
+                                    </div>
+                                    <small style="color:#aaa;">Rango: ${ex.rank} | ${ex.type}</small>
+                                    <div style="margin-top:5px;">
+                                        <button onclick="viewGuide(${index})" style="background:none; border:1px solid #555; color:var(--color-accent); cursor:pointer; font-size:0.85rem; padding:4px 10px; border-radius:3px; transition:all 0.3s;">
+                                            📷 Ver Guía / Info
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>`;
+            });
+          }
+
+          html += `</ul>`;
+          html += `<p style="font-size:0.9rem; color:#aaa;">⚠️ <strong>Penalización:</strong> ${quest.penalty}</p>`;
+
+          questContent.innerHTML = html;
+          questBox.style.display = "block";
+
+          // Animation reset
+          questBox.classList.remove("visible");
+          setTimeout(() => questBox.classList.add("visible"), 50);
+
+          // Show/Hide Complete Button
+          if (!quest.is_completed) {
+            document.getElementById("complete-quest-btn").style.display =
+              "inline-block";
+          } else {
+            document.getElementById("complete-quest-btn").style.display =
+              "none";
+          }
+        };
+
+        // Initialize Generator & Check Auto-load
+        const generator = new RoutineGenerator(profile);
+
+        // 1. Check for existing quest IMMEDIATELY on load
+        const todayQuest = await generator.checkTodayQuest();
+        if (todayQuest) {
+          console.log("Auto-loading today's quest...");
+          renderQuest(todayQuest);
+        }
+
+        document
+          .getElementById("generate-quest-btn")
+          .addEventListener("click", async () => {
+            // FATIGUE CHECK
+            if ((profile.fatigue || 0) >= 100) {
+              alert(
+                "⚠️ ¡ESTÁS AGOTADO! (Fatiga ≥ 100%)\n\nNo puedes realizar más misiones hasta que descanses.",
+              );
+              return;
+            }
+
+            // UI Feedback
+            const questContent = document.getElementById("quest-content");
+            document.getElementById("daily-quest").style.display = "block";
+            questContent.innerHTML = "<p>Invocando el sistema...</p>";
+
+            const focus = document.getElementById("quest-focus").value;
+
+            // Generate (Internal checkTodayQuest is redundant but safe)
+            const quest = await generator.generateDailyQuest(focus);
+
+            renderQuest(quest);
+          });
+
+        // --- Complete Quest Logic ---
+        const completeBtn = document.querySelector("#daily-quest button.btn");
+        completeBtn.id = "complete-quest-btn"; // Ensure ID
+        completeBtn.style.display = "none"; // Hide initially
+
+        completeBtn.addEventListener("click", async () => {
+          const checkboxes = document.querySelectorAll(
+            '#quest-content input[type="checkbox"]:checked',
+          );
+          // Allow 0 checkboxes if they want to fail and take fatigue penalty?
+          // The prompt implies skipping exercises penalizes, so we should allow 'partial' completion which could be 0.
+          // But let's require at least 1 interaction or just process what is there.
+
+          let xpGained = 0;
+          const completedExercises = [];
+          const missedExercises = [];
+
+          // 1. Identify Completed vs Missed
+          currentQuestExercises.forEach((ex, idx) => {
+            const isChecked = document.querySelector(
+              `#quest-content input[data-index="${idx}"]`,
+            ).checked;
+            if (isChecked) {
+              completedExercises.push(ex);
+              xpGained += Gamification.getXPByRank(ex.rank);
+
+              // Log to Database (Performance Logs) only for completed
+              if (ex.exercise_id) {
+                supabase
+                  .from("performance_logs")
+                  .insert({
+                    user_id: session.user.id,
+                    exercise_id: ex.exercise_id,
+                    reps_completed: parseInt(ex.reps) || 10,
+                    weight_lifted: 0,
+                    rpe: 8,
+                  })
+                  .then(() => {}); // Fire and forget log
+              }
+            } else {
+              missedExercises.push(ex);
+            }
+          });
+
+          // 2. Calculate New Stats & Fatigue
+          const statChange = Gamification.calculateStatsGrowth(
+            completedExercises,
+            missedExercises,
+          );
+          const fatigueChange = Gamification.calculateFatigueChange(
+            currentQuestExercises.length,
+            completedExercises.length,
+          );
+
+          // Apply XP Changes (Gain from tasks - Penalty from missed)
+          let newXp =
+            (profile.experience_points || 0) + xpGained + statChange.xp;
+          if (newXp < 0) newXp = 0; // No negative XP total? Or allow it? Let's floor at 0.
+
+          const newLevel = Gamification.calculateLevel(newXp);
+          const newRank = Gamification.calculateRank(newLevel);
+
+          let newFatigue = (profile.fatigue || 0) + fatigueChange;
+          if (newFatigue < 0) newFatigue = 0;
+
+          // Calculate new stats with simple floor of 0
+          const newStr = Math.max(
+            0,
+            (profile.strength || 10) + statChange.strength,
+          );
+          const newAgi = Math.max(
+            0,
+            (profile.agility || 10) + statChange.agility,
+          );
+          const newVit = Math.max(
+            0,
+            (profile.vitality || 10) + statChange.vitality,
+          );
+
+          const updates = {
+            experience_points: newXp,
+            level: newLevel,
+            rank: newRank,
+            strength: newStr,
+            agility: newAgi,
+            vitality: newVit,
+            fatigue: newFatigue,
+            updated_at: new Date(),
+          };
+
+          const { error: updateError } = await supabase
+            .from("profiles")
+            .update(updates)
+            .eq("id", session.user.id);
+
+          if (updateError) {
+            alert("Error guardando progreso: " + updateError.message);
+          } else {
+            // Mark Routine as Completed in DB
+            if (currentQuestRoutineId) {
+              await supabase
+                .from("routines")
+                .update({ is_completed: true })
+                .eq("routine_id", currentQuestRoutineId);
+            }
+
+            let msg = `¡MISIÓN FINALIZADA!\n\n`;
+
+            const netXp = xpGained + statChange.xp;
+            msg += `XP: ${netXp >= 0 ? "+" : ""}${netXp}\n`;
+            msg += `Fatiga: ${fatigueChange > 0 ? "+" : ""}${fatigueChange}% (${newFatigue}% Total)\n`;
+
+            // Show Stat Changes
+            if (statChange.strength !== 0)
+              msg += `Fuerza: ${statChange.strength > 0 ? "+" : ""}${statChange.strength}\n`;
+            if (statChange.agility !== 0)
+              msg += `Agilidad: ${statChange.agility > 0 ? "+" : ""}${statChange.agility}\n`;
+            if (statChange.vitality !== 0)
+              msg += `Vitalidad: ${statChange.vitality > 0 ? "+" : ""}${statChange.vitality}\n`;
+
+            if (newRank !== profile.rank)
+              msg += `\n¡RANGO ACTUALIZADO: ${newRank}!`;
+
+            alert(msg);
+
+            // Update Local UI
+            Object.assign(profile, updates);
+            updateUI(profile);
+
+            // Reset Quest UI
+            document.getElementById("daily-quest").style.display = "none";
+          }
+        });
+      });
+    </script>
+  </body>
+</html>

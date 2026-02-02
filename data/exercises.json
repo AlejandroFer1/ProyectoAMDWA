@@ -1,0 +1,86 @@
+[
+  {
+    "id": 1,
+    "name": "Push-ups (Flexiones)",
+    "muscle_group": "Chest",
+    "rank": "E",
+    "type": "Bodyweight"
+  },
+  {
+    "id": 2,
+    "name": "Bodyweight Squats (Sentadillas)",
+    "muscle_group": "Legs",
+    "rank": "E",
+    "type": "Bodyweight"
+  },
+  {
+    "id": 3,
+    "name": "Plank (Plancha)",
+    "muscle_group": "Core",
+    "rank": "E",
+    "type": "Bodyweight"
+  },
+  {
+    "id": 4,
+    "name": "Pull-ups (Dominadas)",
+    "muscle_group": "Back",
+    "rank": "C",
+    "type": "Bodyweight"
+  },
+  {
+    "id": 5,
+    "name": "Bench Press",
+    "muscle_group": "Chest",
+    "rank": "C",
+    "type": "Strength"
+  },
+  {
+    "id": 6,
+    "name": "Deadlift (Peso Muerto)",
+    "muscle_group": "Back/Legs",
+    "rank": "B",
+    "type": "Strength"
+  },
+  {
+    "id": 7,
+    "name": "Overhead Press (Press Militar)",
+    "muscle_group": "Shoulders",
+    "rank": "C",
+    "type": "Strength"
+  },
+  {
+    "id": 8,
+    "name": "Lunges (Zancadas)",
+    "muscle_group": "Legs",
+    "rank": "D",
+    "type": "Bodyweight/Weights"
+  },
+  {
+    "id": 9,
+    "name": "Dumbbell Rows",
+    "muscle_group": "Back",
+    "rank": "D",
+    "type": "Strength"
+  },
+  {
+    "id": 10,
+    "name": "Muscle-up",
+    "muscle_group": "Full Body",
+    "rank": "A",
+    "type": "Calisthenics"
+  },
+  {
+    "id": 11,
+    "name": "One Arm Push-up",
+    "muscle_group": "Chest",
+    "rank": "A",
+    "type": "Calisthenics"
+  },
+  {
+    "id": 12,
+    "name": "Dragon Flag",
+    "muscle_group": "Core",
+    "rank": "S",
+    "type": "Calisthenics"
+  }
+]

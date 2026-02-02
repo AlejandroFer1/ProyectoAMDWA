@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Solo Leveling - Iniciar Sesión</title>
+    <link rel="stylesheet" href="css/style.css" />
+    <link
+      rel="icon"
+      type="image/png"
+      href="img/logo_app_proyecto__1_-removebg-preview.png"
+    />
+  </head>
+
+  <body>
+    <!-- Header -->
+    <header>
+      <div class="container">
+        <nav>
+          <a href="index.html" class="logo-link">
+            <img
+              src="img/logo_app_proyecto__1_-removebg-preview.png"
+              alt="Solo Leveling Logo"
+              class="logo"
+            />
+          </a>
+          <ul class="nav-links">
+            <li><a href="registro.html" class="btn btn-sm">Registro</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <section id="login">
+      <div class="container registration-container fade-in-up">
+        <div class="registration-card">
+          <h2 class="section-title">Acceso de Cazador</h2>
+          <p class="registration-subtitle">
+            Identifícate para continuar tu progresión.
+          </p>
+
+          <form id="loginForm">
+            <div class="form-group">
+              <label for="identifier">Usuario o Email</label>
+              <input
+                type="text"
+                id="identifier"
+                name="identifier"
+                required
+                placeholder="SungJinWoo o email@gremio.com"
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="password">Contraseña</label>
+              <input
+                type="password"
+                id="password"
+                name="password"
+                required
+                placeholder="********"
+              />
+            </div>
+
+            <button type="submit" class="btn btn-accent full-width">
+              Iniciar Sesión
+            </button>
+            <p class="login-link">
+              ¿No tienes ID? <a href="registro.html">Regístrate y Despierta</a>
+            </p>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <script src="js/main.js"></script>
+    <script type="module">
+      import { loginWithUsernameOrEmail } from "./js/auth.js";
+
+      document
+        .getElementById("loginForm")
+        .addEventListener("submit", async function (e) {
+          e.preventDefault();
+          const identifier = document.getElementById("identifier").value;
+          const password = document.getElementById("password").value;
+
+          const success = await loginWithUsernameOrEmail(identifier, password);
+          if (success) {
+            window.location.href = "perfil.html";
+          }
+        });
+    </script>
+  </body>
+</html>

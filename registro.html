@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Solo Leveling - Registro de Cazador</title>
+    <link rel="stylesheet" href="css/style.css" />
+    <link
+      rel="icon"
+      type="image/png"
+      href="img/logo_app_proyecto__1_-removebg-preview.png"
+    />
+  </head>
+
+  <body>
+    <!-- Header -->
+    <header>
+      <div class="container">
+        <nav>
+          <a href="index.html" class="logo-link">
+            <img
+              src="img/logo_app_proyecto__1_-removebg-preview.png"
+              alt="Solo Leveling Logo"
+              class="logo"
+            />
+          </a>
+          <ul class="nav-links">
+            <li><a href="login.html">Inicio Sesión</a></li>
+            <li><a href="#" class="btn btn-sm">Registro</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <section id="registration">
+      <div class="container registration-container fade-in-up">
+        <div class="registration-card">
+          <h2 class="section-title">Registro de Cazador</h2>
+          <p class="registration-subtitle">
+            Crea tu ID de Jugador para comenzar el sistema.
+          </p>
+
+          <form id="registrationForm">
+            <!-- Account Info -->
+            <div class="form-group">
+              <label for="username">Nombre de Cazador (Usuario)</label>
+              <input
+                type="text"
+                id="username"
+                name="username"
+                required
+                placeholder="Ej. SungJinWoo"
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="email">Email del Gremio</label>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                required
+                placeholder="ejemplo@gremio.com"
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="password">Contraseña</label>
+              <input
+                type="password"
+                id="password"
+                name="password"
+                required
+                placeholder="********"
+              />
+            </div>
+
+            <!-- Initial QA / Stats -->
+            <h3 class="form-section-title">Evaluación Inicial (QA)</h3>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="age">Edad</label>
+                <input
+                  type="number"
+                  id="age"
+                  name="age"
+                  required
+                  min="10"
+                  max="100"
+                />
+              </div>
+              <div class="form-group">
+                <label for="height">Altura (cm)</label>
+                <input
+                  type="number"
+                  id="height"
+                  name="height"
+                  required
+                  min="100"
+                  max="250"
+                />
+              </div>
+              <div class="form-group">
+                <label for="weight">Peso (kg)</label>
+                <input
+                  type="number"
+                  id="weight"
+                  name="weight"
+                  required
+                  min="30"
+                  max="300"
+                />
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="activity">Nivel de Actividad Actual</label>
+              <select id="activity" name="activity" required>
+                <option value="" disabled selected>
+                  Selecciona tu nivel...
+                </option>
+                <option value="sedentary">Civil (Sedentario)</option>
+                <option value="active">Cazador Novato (Activo 1-3 días)</option>
+                <option value="athlete">
+                  Cazador Avanzado (Activo 4+ días)
+                </option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="goal">Objetivo Principal (Clase)</label>
+              <select id="goal" name="goal" required>
+                <option value="" disabled selected>
+                  Selecciona tu clase...
+                </option>
+                <option value="strength">Guerrero (Fuerza)</option>
+                <option value="hypertrophy">Tanque (Masa Muscular)</option>
+                <option value="endurance">Asesino (Resistencia/Cardio)</option>
+              </select>
+            </div>
+
+            <button type="submit" class="btn btn-accent full-width">
+              Despertar
+            </button>
+            <p class="login-link">
+              ¿Ya tienes ID? <a href="login.html">Inicia Sesión</a>
+            </p>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <script src="js/main.js"></script>
+    <script type="module">
+      import { registerUser } from "./js/auth.js";
+
+      document
+        .getElementById("registrationForm")
+        .addEventListener("submit", async function (e) {
+          e.preventDefault();
+
+          const formData = new FormData(this);
+          const email = formData.get("email");
+          const password = formData.get("password");
+
+          const userData = {
+            username: formData.get("username"),
+            age: parseInt(formData.get("age")),
+            height: parseInt(formData.get("height")),
+            weight: parseFloat(formData.get("weight")),
+            activity: formData.get("activity"),
+            goal: formData.get("goal"),
+          };
+
+          await registerUser(email, password, userData);
+        });
+    </script>
+  </body>
+</html>
