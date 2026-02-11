@@ -43,6 +43,17 @@ export class RoutineGenerator {
 
   // Helper to calculate reps based on exercise type and multiplier
   calculateReps(exercise, multiplier) {
+    // Check for time-based exercises by name or type
+    const timeBasedKeywords = ["plank", "plancha", "isometric", "wall sit", "hollow body"];
+    const isTimeBased = timeBasedKeywords.some(k => exercise.name.toLowerCase().includes(k)) || exercise.type === "Stamina";
+
+    if (isTimeBased) {
+      // Return seconds instead of reps
+      const baseSeconds = 30;
+      const extraSeconds = multiplier * 15;
+      return `${baseSeconds + extraSeconds}-${baseSeconds + extraSeconds + 30}s`;
+    }
+
     if (exercise.type === "Strength") {
       return `${Math.max(3, 8 - multiplier)}-${Math.max(5, 12 - multiplier)}`;
     } else if (exercise.type === "Cardio" || exercise.type === "Bodyweight") {
@@ -263,7 +274,7 @@ export class RoutineGenerator {
       exercises: routine.map((ex) => ({
         ...ex,
         sets: sets,
-        reps: reps,
+        reps: this.calculateReps(ex, this.getRankMultiplier(activeRank)),
         location: ex.location || "Both",
       })),
       reward: "Recuperación de Estado",

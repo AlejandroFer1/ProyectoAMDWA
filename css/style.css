@@ -122,11 +122,9 @@ img {
 .section-title {
   font-size: 2.5rem;
   text-align: center;
-  margin-bottom: 3rem;
+  margin: 0 auto 3rem;
   position: relative;
-  display: inline-block;
-  left: 50%;
-  transform: translateX(-50%);
+  display: block;
 }
 
 .section-title::after {
@@ -188,13 +186,11 @@ nav {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  height: 90px; /* Fixed height for consistency */
+  height: 60px; /* Reduced from 90px */
 }
 
 .logo {
-  height: 120px; /* Kept large but container handles overflow/scaling usually, or adjusting spacing */
-  /* If height 90px container, this might be too big. Let's adjust.*/
-  height: 70px;
+  height: 50px; /* Reduced from 70px */
   filter: invert(1) drop-shadow(0 0 8px rgba(138, 43, 226, 0.6));
   transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
@@ -212,7 +208,7 @@ nav {
 
 .nav-links a {
   font-family: var(--font-heading);
-  font-size: 1rem;
+  font-size: 0.9rem; /* Slightly smaller font */
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 2px;
@@ -225,7 +221,7 @@ nav {
 .nav-links .btn-sm {
   border: 1px solid rgba(0, 229, 255, 0.3);
   background: rgba(0, 229, 255, 0.05);
-  padding: 10px 25px;
+  padding: 8px 20px; /* Smaller padding */
   border-radius: 4px;
   color: var(--color-accent);
   box-shadow: 0 0 10px rgba(0, 229, 255, 0.1);
@@ -244,10 +240,10 @@ nav {
   border-color: var(--color-accent);
 }
 
-/* Adjust section padding to account for fixed header (90px) */
+/* Adjust section padding to account for fixed header (60px) */
 #registration,
 #login {
-  padding-top: 140px; /* Increased top padding */
+  padding-top: 100px; /* Adjusted top padding */
 }
 
 .menu-toggle {
@@ -667,4 +663,46 @@ select:focus {
   .form-row {
     grid-template-columns: 1fr;
   }
+}
+
+/* Custom Checkbox Styling for Daily Missions */
+.hunter-checkbox {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--color-primary);
+  border-radius: 4px;
+  margin-right: 15px;
+  position: relative;
+  cursor: pointer;
+  background: rgba(0, 0, 0, 0.5);
+  transition: all 0.3s ease;
+  flex-shrink: 0;
+}
+
+.hunter-checkbox:checked {
+  background: var(--color-primary);
+  border-color: var(--color-accent);
+  box-shadow: 0 0 10px var(--color-primary);
+}
+
+.hunter-checkbox:checked::after {
+  content: '✔';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  font-size: 14px;
+}
+
+.hunter-checkbox:hover {
+  border-color: var(--color-accent);
+}
+
+.hunter-checkbox:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  filter: grayscale(0.5);
 }
