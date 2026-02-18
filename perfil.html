@@ -633,16 +633,8 @@
           if (!imageUrl) imageUrl = fallback.image;
         }
 
-        // Show Image if exists
-        if (imageUrl) {
-          img.src = imageUrl;
-          img.style.display = "block";
-        } else {
-          // Use a cool generic fitness placeholder if absolutely nothing found
-          img.src =
-            "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?auto=format&fit=crop&w=400&q=80";
-          img.style.display = "block";
-        }
+        // Image removed as per user request
+        img.style.display = "none";
 
         // Show Video if exists
         if (videoUrl) {
