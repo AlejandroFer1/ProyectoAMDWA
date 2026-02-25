@@ -1,0 +1,298 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Solo Leveling - Adquirir Licencia Monarca</title>
+    <link rel="stylesheet" href="css/style.css" />
+    <link
+      rel="icon"
+      type="image/png"
+      href="img/logo_app_proyecto__1_-removebg-preview.png"
+    />
+    <style>
+      body {
+        background-color: #050505;
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+      }
+      .checkout-container {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 40px 20px;
+        margin-top: 50px;
+      }
+      .checkout-card {
+        background: rgba(15, 15, 20, 0.95);
+        border: 2px solid var(--color-primary);
+        box-shadow: 0 0 50px rgba(138, 43, 226, 0.2);
+        max-width: 900px;
+        width: 100%;
+        border-radius: 12px;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        overflow: hidden;
+      }
+      @media (max-width: 768px) {
+        .checkout-card {
+          grid-template-columns: 1fr;
+        }
+      }
+      .checkout-summary {
+        background: linear-gradient(
+          135deg,
+          rgba(138, 43, 226, 0.1),
+          rgba(0, 0, 0, 0.8)
+        );
+        padding: 40px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        border-right: 1px solid rgba(255, 255, 255, 0.05);
+      }
+      .checkout-form {
+        padding: 40px;
+      }
+      .c-title {
+        color: var(--color-primary);
+        font-family: var(--font-heading);
+        font-size: 2rem;
+        margin-bottom: 10px;
+      }
+      .price-row {
+        display: flex;
+        justify-content: space-between;
+        margin: 15px 0;
+        font-size: 1.1rem;
+        color: #ccc;
+      }
+      .total-row {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 20px;
+        padding-top: 20px;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: white;
+      }
+
+      /* Form inputs */
+      .form-group {
+        margin-bottom: 20px;
+      }
+      .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        color: var(--color-text-muted);
+        font-size: 0.9rem;
+      }
+      .form-group input {
+        width: 100%;
+        padding: 12px;
+        background: rgba(0, 0, 0, 0.5);
+        border: 1px solid #333;
+        border-radius: 6px;
+        color: white;
+        transition: border-color 0.3s;
+      }
+      .form-group input:focus {
+        border-color: var(--color-accent);
+        outline: none;
+      }
+      .coupon-box {
+        display: flex;
+        gap: 10px;
+      }
+      .coupon-box input {
+        flex: 1;
+        text-transform: uppercase;
+      }
+      .coupon-box button {
+        padding: 0 20px;
+      }
+
+      .secure-badge {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        justify-content: center;
+        margin-top: 20px;
+        color: #666;
+        font-size: 0.8rem;
+      }
+    </style>
+  </head>
+
+  <body>
+    <header>
+      <div class="container">
+        <nav>
+          <a href="index.html" class="logo-link">
+            <img
+              src="img/logo_app_proyecto__1_-removebg-preview.png"
+              alt="Solo Leveling Logo"
+              class="logo"
+            />
+          </a>
+          <ul class="nav-links">
+            <li><a href="index.html">Volver</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <div class="checkout-container">
+      <div class="checkout-card">
+        <!-- Summary Side -->
+        <div class="checkout-summary">
+          <h2 class="c-title">Licencia Monarca</h2>
+          <p style="color: #aaa; margin-bottom: 30px; line-height: 1.5">
+            Desbloquea el Generador de Misiones inteligente y elimina las
+            barreras de tu entrenamiento.
+          </p>
+
+          <div class="price-row">
+            <span>Suscripción VIP (Mensual)</span>
+            <span>$15.00</span>
+          </div>
+          <div
+            class="price-row"
+            id="discount-row"
+            style="display: none; color: var(--color-accent)"
+          >
+            <span>Descuento de Gremio (<span id="discount-pct">0</span>%)</span>
+            <span id="discount-amount">-$0.00</span>
+          </div>
+
+          <div class="total-row">
+            <span>Total a Pagar</span>
+            <span id="total-price">$15.00</span>
+          </div>
+
+          <ul
+            style="
+              margin-top: 40px;
+              color: #888;
+              font-size: 0.9rem;
+              line-height: 1.8;
+            "
+          >
+            <li>✓ Cancelación en cualquier momento</li>
+            <li>✓ Acceso instantáneo al Sistema</li>
+            <li>✓ Pago cifrado de extremo a extremo</li>
+          </ul>
+        </div>
+
+        <!-- Payment Side -->
+        <div class="checkout-form">
+          <h3 style="margin-bottom: 25px; color: white">Detalles de Pago</h3>
+
+          <div
+            id="auth-warning"
+            style="
+              display: none;
+              background: rgba(255, 0, 0, 0.1);
+              border: 1px solid red;
+              padding: 15px;
+              border-radius: 5px;
+              color: #ff6b6b;
+              margin-bottom: 20px;
+              font-size: 0.9rem;
+            "
+          >
+            ⚠️ Debes
+            <a
+              href="login.html"
+              style="color: white; text-decoration: underline"
+              >iniciar sesión</a
+            >
+            o registrarte antes de proceder con el pago de la licencia.
+          </div>
+
+          <form id="payment-form">
+            <div class="form-group">
+              <label>¿Tienes un Código de Gremio?</label>
+              <div class="coupon-box">
+                <input
+                  type="text"
+                  id="coupon-code"
+                  placeholder="Ej: HUNTER-A"
+                />
+                <button type="button" class="btn btn-sm" id="btn-apply-coupon">
+                  Aplicar
+                </button>
+              </div>
+              <small
+                id="coupon-msg"
+                style="
+                  display: block;
+                  margin-top: 5px;
+                  color: var(--color-accent);
+                  height: 15px;
+                "
+              ></small>
+            </div>
+
+            <div class="form-group">
+              <label>Nombre en la Tarjeta</label>
+              <input
+                type="text"
+                id="card-name"
+                placeholder="Sung Jinwoo"
+                required
+              />
+            </div>
+
+            <div class="form-group">
+              <label>Número de Tarjeta (Falsa para prueba)</label>
+              <input
+                type="text"
+                id="card-number"
+                placeholder="4000 1234 5678 9010"
+                maxlength="19"
+                required
+              />
+            </div>
+
+            <div
+              style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px"
+            >
+              <div class="form-group">
+                <label>Expira</label>
+                <input type="text" placeholder="MM/YY" maxlength="5" required />
+              </div>
+              <div class="form-group">
+                <label>CVC</label>
+                <input type="text" placeholder="123" maxlength="4" required />
+              </div>
+            </div>
+
+            <button
+              type="submit"
+              class="btn btn-accent"
+              style="
+                width: 100%;
+                font-size: 1.1rem;
+                padding: 15px;
+                margin-top: 10px;
+              "
+              id="btn-pay"
+            >
+              Confirmar Pago 🔒
+            </button>
+          </form>
+
+          <div class="secure-badge">
+            <span>🛡️</span> Transacción asegurada por el Sistema
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script type="module" src="js/pago.js"></script>
+  </body>
+</html>

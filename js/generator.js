@@ -44,8 +44,16 @@ export class RoutineGenerator {
   // Helper to calculate reps based on exercise type and multiplier
   calculateReps(exercise, multiplier) {
     // Check for time-based exercises by name or type
-    const timeBasedKeywords = ["plank", "plancha", "isometric", "wall sit", "hollow body"];
-    const isTimeBased = timeBasedKeywords.some(k => exercise.name.toLowerCase().includes(k)) || exercise.type === "Stamina";
+    const timeBasedKeywords = [
+      "plank",
+      "plancha",
+      "isometric",
+      "wall sit",
+      "hollow body",
+    ];
+    const isTimeBased =
+      timeBasedKeywords.some((k) => exercise.name.toLowerCase().includes(k)) ||
+      exercise.type === "Stamina";
 
     if (isTimeBased) {
       // Return seconds instead of reps
@@ -82,7 +90,8 @@ export class RoutineGenerator {
         `,
       )
       .eq("user_id", this.user.id)
-      .eq("date_generated", today) // Robust check using dedicated column
+      .eq("date_generated", today)
+      .eq("is_completed", false) // Solo te bloquea sacar nueva misión si la actual NO está completa
       .limit(1);
 
     if (error) {
@@ -112,6 +121,22 @@ export class RoutineGenerator {
     }
 
     return null;
+  }
+
+  // Comprobar cuántas misiones ha hecho hoy (completas o incompletas)
+  async getTodayQuestCount() {
+    const today = new Date().toISOString().split("T")[0];
+    const { count, error } = await supabase
+      .from("routines")
+      .select("*", { count: "exact", head: true })
+      .eq("user_id", this.user.id)
+      .eq("date_generated", today);
+
+    if (error) {
+      console.error("Error checking quest count:", error);
+      return 0;
+    }
+    return count || 0;
   }
 
   async saveQuestAsRoutine(quest) {
@@ -168,8 +193,17 @@ export class RoutineGenerator {
     // 1. Check if one exists first
     const existingQuest = await this.checkTodayQuest();
     if (existingQuest) {
-      console.log("Found existing daily quest for today.");
+      console.log("Found existing incomplete daily quest for today.");
       return existingQuest;
+    }
+
+    // 1.b. Límite para no-premium (Solo 1 misión total al día)
+    if (this.user.is_premium !== true) {
+      const totalToday = await this.getTodayQuestCount();
+      if (totalToday >= 1) {
+        console.warn("Daily limit reached for non-premium user.");
+        return null;
+      }
     }
 
     // 2. Logic to Generate New Quest

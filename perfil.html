@@ -10,6 +10,7 @@
       type="image/png"
       href="img/logo_app_proyecto__1_-removebg-preview.png"
     />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
       /* Profile Specific Inline Styles (to be moved to css later) */
       .profile-header {
@@ -20,6 +21,32 @@
           var(--color-bg)
         );
         text-align: center;
+      }
+
+      /* Progress Charts Styles */
+      .progress-section {
+        margin-top: 50px;
+        background: rgba(15, 15, 20, 0.8);
+        border: 1px solid var(--color-primary);
+        border-radius: 10px;
+        padding: 30px;
+        box-shadow: 0 0 30px rgba(138, 43, 226, 0.1);
+      }
+      .charts-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 30px;
+        margin-top: 20px;
+      }
+      @media (max-width: 768px) {
+        .charts-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+      .chart-container {
+        position: relative;
+        height: 300px;
+        width: 100%;
       }
 
       .hunter-card {
@@ -280,6 +307,12 @@
             />
           </a>
           <ul class="nav-links">
+            <li><a href="#progress-anchor">Progreso</a></li>
+            <li>
+              <a href="pago.html" style="color: var(--color-accent)"
+                >Administrar Suscripción</a
+              >
+            </li>
             <li><a href="login.html">Inicio Sesión</a></li>
             <li><a href="#" onclick="logout()">Cerrar Sesión</a></li>
           </ul>
@@ -331,11 +364,146 @@
             </div>
             <div class="stat-item">
               <div class="stat-label">Fatiga</div>
-              <div class="stat-value">0%</div>
+              <div class="stat-value">
+                <span id="stat-fatigue-text">0%</span>
+                <button
+                  id="potion-btn"
+                  style="
+                    background: none;
+                    border: none;
+                    cursor: pointer;
+                    font-size: 1.1rem;
+                    margin-left: 5px;
+                  "
+                  title="Beber Poción Monarca ✨"
+                >
+                  ✨
+                </button>
+              </div>
             </div>
             <div class="stat-item">
               <div class="stat-label">Exp</div>
               <div class="stat-value" id="stat-exp">0 / 100</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- NEW REWARDS PANEL -->
+        <div
+          id="rewards-panel"
+          style="margin-top: 20px; display: none"
+          class="fade-in-up"
+        >
+          <div
+            style="
+              display: grid;
+              grid-template-columns: 1fr 1fr;
+              gap: 20px;
+              max-width: 800px;
+              margin: 0 auto;
+            "
+          >
+            <!-- Rango -->
+            <div
+              style="
+                background: rgba(20, 20, 20, 0.8);
+                border: 1px solid var(--color-primary);
+                border-radius: 8px;
+                padding: 20px;
+                text-align: center;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+              "
+            >
+              <h3 style="color: var(--color-primary); margin-bottom: 15px">
+                🎁 RECOMPENSAS DE RANGO
+              </h3>
+              <p
+                id="reward-message"
+                style="font-size: 1.1rem; margin-bottom: 10px"
+              >
+                Cargando...
+              </p>
+              <div
+                id="reward-coupon-container"
+                style="
+                  display: none;
+                  background: #111;
+                  padding: 10px;
+                  border-radius: 5px;
+                  border-left: 3px solid var(--color-accent);
+                  font-family: monospace;
+                  font-size: 1.2rem;
+                  align-items: center;
+                  justify-content: space-between;
+                  gap: 20px;
+                "
+              >
+                <span
+                  id="reward-coupon-code"
+                  style="color: white; font-weight: bold; letter-spacing: 2px"
+                  >XXXX-XXXX</span
+                >
+                <button
+                  onclick="copyCoupon()"
+                  class="btn btn-accent"
+                  style="padding: 5px 15px; font-size: 0.9rem"
+                >
+                  Copiar
+                </button>
+              </div>
+            </div>
+
+            <!-- Monarca Privileges -->
+            <div
+              style="
+                background: rgba(20, 20, 20, 0.8);
+                border: 1px solid var(--color-accent);
+                border-radius: 8px;
+                padding: 20px;
+                text-align: left;
+              "
+            >
+              <h3
+                style="
+                  color: var(--color-accent);
+                  margin-bottom: 15px;
+                  text-align: center;
+                "
+              >
+                👑 BENEFICIOS MONARCA
+              </h3>
+              <ul
+                style="
+                  list-style: none;
+                  padding: 0;
+                  margin: 0;
+                  line-height: 1.8;
+                  color: #ddd;
+                  font-size: 0.95rem;
+                "
+              >
+                <li><span id="ben-generator">🔒</span> Generador Inlimitado</li>
+                <li>
+                  <span id="ben-video">🔒</span> Videoteca de Entrenamiento
+                </li>
+                <li><span id="ben-xp">🔒</span> +20% Experiencia Extra</li>
+                <li>
+                  <span id="ben-potion">🔒</span> Pociones de Recuperación
+                </li>
+              </ul>
+              <div
+                id="premium-upgrade-cta"
+                style="text-align: center; margin-top: 15px"
+              >
+                <a
+                  href="pago.html"
+                  class="btn btn-accent"
+                  style="font-size: 0.8rem; padding: 8px 15px"
+                  >Adquirir Licencia</a
+                >
+              </div>
             </div>
           </div>
         </div>
@@ -384,9 +552,56 @@
               <!-- Routine items will go here -->
               <p>Iniciando sistema...</p>
             </div>
-            <button class="btn" style="margin-top: 20px">
+            <button
+              id="complete-quest-btn"
+              class="btn"
+              style="margin-top: 20px"
+            >
               Completar Misión
             </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PROGRESS CHARTS SECTION -->
+    <section class="progress-section-wrapper" id="progress-anchor">
+      <div class="container fade-in-up">
+        <div class="progress-section">
+          <h2 class="section-title">Registro de Evolución</h2>
+          <p style="color: var(--color-text-muted); margin-bottom: 20px">
+            Seguimiento en tiempo real de tu crecimiento como cazador.
+          </p>
+
+          <div class="charts-grid">
+            <div class="chart-item">
+              <h3
+                style="
+                  color: var(--color-accent);
+                  margin-bottom: 15px;
+                  font-size: 1.1rem;
+                "
+              >
+                Progreso de Nivel (XP)
+              </h3>
+              <div class="chart-container">
+                <canvas id="xpChart"></canvas>
+              </div>
+            </div>
+            <div class="chart-item">
+              <h3
+                style="
+                  color: var(--color-primary);
+                  margin-bottom: 15px;
+                  font-size: 1.1rem;
+                "
+              >
+                Evolución de Atributos
+              </h3>
+              <div class="chart-container">
+                <canvas id="statsChart"></canvas>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -463,6 +678,7 @@
       import { supabase } from "./js/supabase-client.js";
       import { RoutineGenerator } from "./js/generator.js";
       import { Gamification } from "./js/gamification.js";
+      import { Rewards } from "./js/rewards.js";
       import "./js/auth-bridge.js";
 
       // FALLBACK MEDIA DICTIONARY (Since DB updates via anon key are blocked by RLS)
@@ -638,8 +854,40 @@
 
         // Show Video if exists
         if (videoUrl) {
-          vidFrame.src = videoUrl;
-          vidCont.style.display = "block";
+          if (window.isUserPremium) {
+            vidFrame.style.display = "block";
+            vidFrame.src = videoUrl;
+            vidCont.style.display = "block";
+
+            // Remove premium lock if exists
+            const lock = document.getElementById("premium-video-lock");
+            if (lock) lock.remove();
+          } else {
+            vidFrame.style.display = "none";
+            vidCont.style.display = "block";
+
+            let lock = document.getElementById("premium-video-lock");
+            if (!lock) {
+              lock = document.createElement("div");
+              lock.id = "premium-video-lock";
+              lock.style.position = "absolute";
+              lock.style.top = "0";
+              lock.style.left = "0";
+              lock.style.width = "100%";
+              lock.style.height = "100%";
+              lock.style.background = "#111";
+              lock.style.display = "flex";
+              lock.style.alignItems = "center";
+              lock.style.justifyContent = "center";
+              lock.style.flexDirection = "column";
+              lock.style.border = "1px solid var(--color-primary)";
+              lock.style.borderRadius = "4px";
+              vidCont.appendChild(lock);
+            }
+            lock.style.display = "flex";
+            lock.innerHTML =
+              '<div style="font-size:3rem; margin-bottom:10px;">🔒</div><div style="color:var(--color-primary); text-align:center;">Video restringido al Gremio.<br><a href="pago.html" style="color:var(--color-accent); text-decoration:underline; font-weight:bold;">Requiere Licencia Monarca</a></div>';
+          }
         }
 
         // Show Modal via Class
@@ -658,6 +906,23 @@
         .addEventListener("click", (e) => {
           if (e.target.id === "exercise-modal") window.closeModal();
         });
+
+      // Copy Coupon Logic
+      window.copyCoupon = () => {
+        const codeElement = document.getElementById("reward-coupon-code");
+        if (codeElement && codeElement.textContent) {
+          navigator.clipboard
+            .writeText(codeElement.textContent)
+            .then(() =>
+              alert(
+                "¡Cupón copiado: " +
+                  codeElement.textContent +
+                  "! Puedes usarlo en nuestra tienda oficial.",
+              ),
+            )
+            .catch((err) => console.error("Error al copiar cupón:", err));
+        }
+      };
 
       // Profile Logic
       document.addEventListener("DOMContentLoaded", async () => {
@@ -684,6 +949,46 @@
           alert("Error cargando perfil: " + error.message);
           return;
         }
+
+        window.isUserPremium = profile.is_premium === true;
+
+        // Potion Logic (Premium Benefit)
+        document
+          .getElementById("potion-btn")
+          .addEventListener("click", async () => {
+            if (profile.is_premium !== true) {
+              alert(
+                "🔒 ACCESO DENEGADO.\\n\\nEl suministro de Pociones está reservado exclusivamente para cazadores con Licencia Monarca. Adquiere tu licencia para sanar tu fatiga al instante.",
+              );
+              return;
+            }
+            if ((profile.fatigue || 0) <= 0) {
+              alert(
+                "Tu fatiga ya es del 0%. No necesitas la poción en este momento.",
+              );
+              return;
+            }
+            if (
+              confirm(
+                "✨ ¿Deseas beber una poción de recuperación instantánea? Esto restaurará tu fatiga actual a 0%.",
+              )
+            ) {
+              // Update DB
+              const { error: potionErr } = await supabase
+                .from("profiles")
+                .update({ fatigue: 0, updated_at: new Date() })
+                .eq("id", profile.id);
+              if (potionErr) {
+                alert("Error al usar poción magica.");
+                return;
+              }
+              profile.fatigue = 0;
+              updateUI(profile);
+              alert(
+                "✨ Te has bebido la Poción del Monarca.\\nTu cuerpo se siente revigorizado, ¡Fatiga al 0%!",
+              );
+            }
+          });
 
         // --- Render Profile Stats ---
         const updateUI = (p) => {
@@ -714,12 +1019,47 @@
 
           // Fatigue UI
           const fatigue = p.fatigue || 0;
-          const fatigueElem = document.querySelector(
-            ".stat-item:nth-child(6) .stat-value",
-          ); // nth-child(6) is Fatigue
+          const fatigueElem = document.getElementById("stat-fatigue-text");
           if (fatigueElem) {
             fatigueElem.textContent = `${fatigue}%`;
             fatigueElem.style.color = fatigue >= 90 ? "red" : "white";
+          }
+
+          // === REWARDS UI ===
+          const rankLevel = p.rank || "E";
+          const rewardsPanel = document.getElementById("rewards-panel");
+          const rewardMessage = document.getElementById("reward-message");
+          const couponContainer = document.getElementById(
+            "reward-coupon-container",
+          );
+          const couponCode = document.getElementById("reward-coupon-code");
+
+          const benefits = Rewards.getRankBenefits(rankLevel);
+
+          if (rewardsPanel) {
+            rewardsPanel.style.display = "block"; // Show the panel
+
+            // 1. Rango
+            rewardMessage.innerHTML = `<span style="color: ${benefits.color}; font-weight: bold;">Rango ${rankLevel}:</span> ${benefits.message}`;
+            if (benefits.couponCode) {
+              couponContainer.style.display = "flex";
+              couponCode.textContent = benefits.couponCode;
+              couponCode.style.color = benefits.color;
+            } else {
+              couponContainer.style.display = "none";
+            }
+
+            // 2. Privilegios Monarca
+            const icon = window.isUserPremium ? "✅" : "🔒";
+            document.getElementById("ben-generator").textContent = icon;
+            document.getElementById("ben-video").textContent = icon;
+            document.getElementById("ben-xp").textContent = icon;
+            document.getElementById("ben-potion").textContent = icon;
+
+            const cta = document.getElementById("premium-upgrade-cta");
+            if (cta) {
+              cta.style.display = window.isUserPremium ? "none" : "block";
+            }
           }
         };
 
@@ -749,11 +1089,10 @@
 
         updateUI(profile);
 
-        // --- Quest Generation ---
+        // --- QUEST GENERATION & COMPLETION ---
         let currentQuestExercises = []; // Store rendered exercises
         let currentQuestRoutineId = null;
 
-        // NEW: Reusable Render Function
         const renderQuest = (quest) => {
           const questBox = document.getElementById("daily-quest");
           const questContent = document.getElementById("quest-content");
@@ -761,7 +1100,6 @@
           currentQuestExercises = quest.exercises;
           currentQuestRoutineId = quest.routine_id;
 
-          // Check if already completed
           if (quest.is_completed) {
             alert("✅ Misión diaria completada. Mostrando historial.");
             document.getElementById("complete-quest-btn").style.display =
@@ -771,7 +1109,6 @@
             questBox.classList.remove("completed-quest");
           }
 
-          // Render Quest HTML
           let html = `<h4 style="color:white; margin-bottom:10px;">${quest.title}</h4>`;
           html += `<ul style="text-align:left; margin-bottom:15px; list-style:none; padding:0;">`;
 
@@ -785,19 +1122,8 @@
                   : ex.location === "Gym"
                     ? "🏋️"
                     : "🔄";
-
-              // Instructions & Media
-              const instructions = ex.instructions
-                ? ex.instructions.replace(/\n/g, "<br>")
-                : "Sigue las instrucciones estándar.";
-              const videoEmbed = ex.video_url
-                ? `<iframe width="100%" height="200" src="${ex.video_url}" frameborder="0" allowfullscreen style="border-radius:5px; margin-top:10px;"></iframe>`
-                : "";
-
-              // Disable checkboxes if completed
               const disabledAttr = quest.is_completed ? "disabled checked" : "";
 
-              // Make exercises globally available for modal
               window.currentQuestExercises = currentQuestExercises;
 
               html += `<li style="margin-bottom:15px; border-bottom:1px solid #333; padding-bottom:10px;">
@@ -826,187 +1152,272 @@
           questContent.innerHTML = html;
           questBox.style.display = "block";
 
-          // Animation reset
           questBox.classList.remove("visible");
           setTimeout(() => questBox.classList.add("visible"), 50);
 
-          // Show/Hide Complete Button
-          if (!quest.is_completed) {
-            document.getElementById("complete-quest-btn").style.display =
-              "inline-block";
-          } else {
-            document.getElementById("complete-quest-btn").style.display =
-              "none";
+          const completeBtn = document.getElementById("complete-quest-btn");
+          if (completeBtn) {
+            completeBtn.style.display = quest.is_completed
+              ? "none"
+              : "inline-block";
           }
         };
 
-        // Initialize Generator & Check Auto-load
         const generator = new RoutineGenerator(profile);
 
-        // 1. Check for existing quest IMMEDIATELY on load
-        const todayQuest = await generator.checkTodayQuest();
-        if (todayQuest) {
-          console.log("Auto-loading today's quest...");
-          renderQuest(todayQuest);
-        }
+        const loadToday = async () => {
+          // Permitimos auto-load para todos si hay una misión
+          const todayQuest = await generator.checkTodayQuest();
+          if (todayQuest) {
+            console.log("Auto-loading today's quest...");
+            renderQuest(todayQuest);
+          }
+        };
+        loadToday();
 
-        document
-          .getElementById("generate-quest-btn")
-          .addEventListener("click", async () => {
-            // FATIGUE CHECK
+        const generateBtn = document.getElementById("generate-quest-btn");
+        if (generateBtn) {
+          // Ya no bloqueamos visualmente el botón al inicio, solo avisamos del límite
+          const questCount = await generator.getTodayQuestCount();
+          const isActuallyPremium = profile.is_premium === true;
+
+          if (!isActuallyPremium && questCount >= 1) {
+            generateBtn.innerHTML = "🔒 <span>LÍMITE DIARIO ALCANZADO</span>";
+            generateBtn.style.background = "rgba(138, 43, 226, 0.3)";
+            generateBtn.style.color = "#ccc";
+            generateBtn.style.border = "1px solid #555";
+          }
+
+          generateBtn.addEventListener("click", async () => {
+            const isActuallyPremium = profile.is_premium === true;
+            const currentCount = await generator.getTodayQuestCount();
+
+            // Los no premium solo pueden generar 1 al día
+            if (!isActuallyPremium && currentCount >= 1) {
+              alert(
+                "🔒 LÍMITE DE MISIÓN DIARIA.\\n\\nLos cazadores de rango estándar solo pueden generar una misión por día.\\n\\n¡Consigue la Licencia Monarca para entrenamientos ilimitados!",
+              );
+              window.location.href = "pago.html";
+              return;
+            }
+
             if ((profile.fatigue || 0) >= 100) {
               alert(
-                "⚠️ ¡ESTÁS AGOTADO! (Fatiga ≥ 100%)\n\nNo puedes realizar más misiones hasta que descanses.",
+                "⚠️ ¡ESTÁS AGOTADO! (Fatiga ≥ 100%)\\n\\nNo puedes realizar más misiones hasta que descanses.",
               );
               return;
             }
 
-            // UI Feedback
             const questContent = document.getElementById("quest-content");
             document.getElementById("daily-quest").style.display = "block";
             questContent.innerHTML = "<p>Invocando el sistema...</p>";
 
             const focus = document.getElementById("quest-focus").value;
-
-            // Generate (Internal checkTodayQuest is redundant but safe)
             const quest = await generator.generateDailyQuest(focus);
-
             renderQuest(quest);
           });
+        }
 
-        // --- Complete Quest Logic ---
-        const completeBtn = document.querySelector("#daily-quest button.btn");
-        completeBtn.id = "complete-quest-btn"; // Ensure ID
-        completeBtn.style.display = "none"; // Hide initially
+        const completeBtn = document.getElementById("complete-quest-btn");
+        if (completeBtn) {
+          completeBtn.addEventListener("click", async () => {
+            let xpGained = 0;
+            const completedExercises = [];
+            const missedExercises = [];
 
-        completeBtn.addEventListener("click", async () => {
-          const checkboxes = document.querySelectorAll(
-            '#quest-content input[type="checkbox"]:checked',
-          );
-          // Allow 0 checkboxes if they want to fail and take fatigue penalty?
-          // The prompt implies skipping exercises penalizes, so we should allow 'partial' completion which could be 0.
-          // But let's require at least 1 interaction or just process what is there.
+            currentQuestExercises.forEach((ex, idx) => {
+              const isChecked = document.querySelector(
+                `#quest-content input[data-index="${idx}"]`,
+              ).checked;
+              if (isChecked) {
+                completedExercises.push(ex);
+                xpGained += Gamification.getXPByRank(ex.rank);
 
-          let xpGained = 0;
-          const completedExercises = [];
-          const missedExercises = [];
-
-          // 1. Identify Completed vs Missed
-          currentQuestExercises.forEach((ex, idx) => {
-            const isChecked = document.querySelector(
-              `#quest-content input[data-index="${idx}"]`,
-            ).checked;
-            if (isChecked) {
-              completedExercises.push(ex);
-              xpGained += Gamification.getXPByRank(ex.rank);
-
-              // Log to Database (Performance Logs) only for completed
-              if (ex.exercise_id) {
-                supabase
-                  .from("performance_logs")
-                  .insert({
-                    user_id: session.user.id,
-                    exercise_id: ex.exercise_id,
-                    reps_completed: parseInt(ex.reps) || 10,
-                    weight_lifted: 0,
-                    rpe: 8,
-                  })
-                  .then(() => {}); // Fire and forget log
+                if (ex.exercise_id) {
+                  // Registro individual si fuera necesario
+                }
+              } else {
+                missedExercises.push(ex);
               }
+            });
+
+            const statChange = Gamification.calculateStatsGrowth(
+              completedExercises,
+              missedExercises,
+            );
+            const fatigueChange = Gamification.calculateFatigueChange(
+              currentQuestExercises.length,
+              completedExercises.length,
+            );
+
+            let gainedFromTask = xpGained + statChange.xp;
+
+            if (window.isUserPremium && gainedFromTask > 0) {
+              gainedFromTask = Math.floor(gainedFromTask * 1.2);
+            }
+
+            let newXp = (profile.experience_points || 0) + gainedFromTask;
+            if (newXp < 0) newXp = 0;
+
+            const newLevel = Gamification.calculateLevel(newXp);
+            const newRank = Gamification.calculateRank(newLevel);
+
+            let newFatigue = (profile.fatigue || 0) + fatigueChange;
+            if (newFatigue < 0) newFatigue = 0;
+
+            const newStr = Math.max(
+              0,
+              (profile.strength || 10) + statChange.strength,
+            );
+            const newAgi = Math.max(
+              0,
+              (profile.agility || 10) + statChange.agility,
+            );
+            const newVit = Math.max(
+              0,
+              (profile.vitality || 10) + statChange.vitality,
+            );
+
+            const updates = {
+              experience_points: newXp,
+              level: newLevel,
+              rank: newRank,
+              strength: newStr,
+              agility: newAgi,
+              vitality: newVit,
+              fatigue: newFatigue,
+              updated_at: new Date(),
+            };
+
+            const { error: updateError } = await supabase
+              .from("profiles")
+              .update(updates)
+              .eq("id", session.user.id);
+
+            if (updateError) {
+              console.error("Error actualizando stats:", updateError);
+              alert("Error al sincronizar con el Sistema.");
             } else {
-              missedExercises.push(ex);
+              // Guardamos racha/log de progreso en cada completado
+              await supabase.from("performance_logs").insert([
+                {
+                  user_id: session.user.id,
+                  date_logged: new Date().toISOString().split("T")[0],
+                  exercise_id: currentQuestExercises[0]?.exercise_id || null,
+                  reps_completed: gainedFromTask,
+                  rpe: 8,
+                },
+              ]);
+
+              let msg = `¡MISIÓN COMPLETADA!\\n\\n+${gainedFromTask} XP\\n+${fatigueChange}% Fatiga\\n`;
+              if (statChange.strength !== 0)
+                msg += `Fuerza: ${statChange.strength > 0 ? "+" : ""}${statChange.strength}\\n`;
+              if (statChange.agility !== 0)
+                msg += `Agilidad: ${statChange.agility > 0 ? "+" : ""}${statChange.agility}\\n`;
+              if (statChange.vitality !== 0)
+                msg += `Vitalidad: ${statChange.vitality > 0 ? "+" : ""}${statChange.vitality}\\n`;
+
+              if (newRank !== profile.rank)
+                msg += `\\n¡RANGO ACTUALIZADO: ${newRank}!`;
+
+              alert(msg);
+
+              Object.assign(profile, updates);
+              updateUI(profile);
+              updateCharts(profile);
+
+              document.getElementById("daily-quest").style.display = "none";
             }
           });
+        }
 
-          // 2. Calculate New Stats & Fatigue
-          const statChange = Gamification.calculateStatsGrowth(
-            completedExercises,
-            missedExercises,
-          );
-          const fatigueChange = Gamification.calculateFatigueChange(
-            currentQuestExercises.length,
-            completedExercises.length,
-          );
+        // --- CHART LOGIC ---
+        let xpChartInstance = null;
+        let statsChartInstance = null;
 
-          // Apply XP Changes (Gain from tasks - Penalty from missed)
-          let newXp =
-            (profile.experience_points || 0) + xpGained + statChange.xp;
-          if (newXp < 0) newXp = 0; // No negative XP total? Or allow it? Let's floor at 0.
-
-          const newLevel = Gamification.calculateLevel(newXp);
-          const newRank = Gamification.calculateRank(newLevel);
-
-          let newFatigue = (profile.fatigue || 0) + fatigueChange;
-          if (newFatigue < 0) newFatigue = 0;
-
-          // Calculate new stats with simple floor of 0
-          const newStr = Math.max(
-            0,
-            (profile.strength || 10) + statChange.strength,
-          );
-          const newAgi = Math.max(
-            0,
-            (profile.agility || 10) + statChange.agility,
-          );
-          const newVit = Math.max(
-            0,
-            (profile.vitality || 10) + statChange.vitality,
-          );
-
-          const updates = {
-            experience_points: newXp,
-            level: newLevel,
-            rank: newRank,
-            strength: newStr,
-            agility: newAgi,
-            vitality: newVit,
-            fatigue: newFatigue,
-            updated_at: new Date(),
+        const initCharts = async () => {
+          const commonOptions = {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+              y: {
+                grid: { color: "rgba(255,255,255,0.05)" },
+                ticks: { color: "#888" },
+              },
+              x: { grid: { display: false }, ticks: { color: "#888" } },
+            },
+            plugins: { legend: { labels: { color: "#fff" } } },
           };
 
-          const { error: updateError } = await supabase
-            .from("profiles")
-            .update(updates)
-            .eq("id", session.user.id);
+          const ctxXP = document.getElementById("xpChart").getContext("2d");
+          xpChartInstance = new Chart(ctxXP, {
+            type: "line",
+            data: {
+              labels: ["Inicio", "Actual"],
+              datasets: [
+                {
+                  label: "XP Total",
+                  data: [0, profile.experience_points || 0],
+                  borderColor: "#8a2be2",
+                  backgroundColor: "rgba(138, 43, 226, 0.2)",
+                  fill: true,
+                  tension: 0.4,
+                },
+              ],
+            },
+            options: commonOptions,
+          });
 
-          if (updateError) {
-            alert("Error guardando progreso: " + updateError.message);
-          } else {
-            // Mark Routine as Completed in DB
-            if (currentQuestRoutineId) {
-              await supabase
-                .from("routines")
-                .update({ is_completed: true })
-                .eq("routine_id", currentQuestRoutineId);
-            }
+          const ctxStats = document
+            .getElementById("statsChart")
+            .getContext("2d");
+          statsChartInstance = new Chart(ctxStats, {
+            type: "radar",
+            data: {
+              labels: ["Fuerza", "Agilidad", "Vitalidad"],
+              datasets: [
+                {
+                  label: "Atributos",
+                  data: [
+                    profile.strength || 10,
+                    profile.agility || 10,
+                    profile.vitality || 10,
+                  ],
+                  borderColor: "#00ffff",
+                  backgroundColor: "rgba(0, 255, 255, 0.2)",
+                },
+              ],
+            },
+            options: {
+              ...commonOptions,
+              scales: {
+                r: {
+                  angleLines: { color: "rgba(255,255,255,0.1)" },
+                  grid: { color: "rgba(255,255,255,0.1)" },
+                  pointLabels: { color: "#fff" },
+                  ticks: { display: false },
+                },
+              },
+            },
+          });
+        };
 
-            let msg = `¡MISIÓN FINALIZADA!\n\n`;
-
-            const netXp = xpGained + statChange.xp;
-            msg += `XP: ${netXp >= 0 ? "+" : ""}${netXp}\n`;
-            msg += `Fatiga: ${fatigueChange > 0 ? "+" : ""}${fatigueChange}% (${newFatigue}% Total)\n`;
-
-            // Show Stat Changes
-            if (statChange.strength !== 0)
-              msg += `Fuerza: ${statChange.strength > 0 ? "+" : ""}${statChange.strength}\n`;
-            if (statChange.agility !== 0)
-              msg += `Agilidad: ${statChange.agility > 0 ? "+" : ""}${statChange.agility}\n`;
-            if (statChange.vitality !== 0)
-              msg += `Vitalidad: ${statChange.vitality > 0 ? "+" : ""}${statChange.vitality}\n`;
-
-            if (newRank !== profile.rank)
-              msg += `\n¡RANGO ACTUALIZADO: ${newRank}!`;
-
-            alert(msg);
-
-            // Update Local UI
-            Object.assign(profile, updates);
-            updateUI(profile);
-
-            // Reset Quest UI
-            document.getElementById("daily-quest").style.display = "none";
+        const updateCharts = (p) => {
+          if (xpChartInstance) {
+            xpChartInstance.data.datasets[0].data[1] = p.experience_points;
+            xpChartInstance.update();
           }
-        });
+          if (statsChartInstance) {
+            statsChartInstance.data.datasets[0].data = [
+              p.strength,
+              p.agility,
+              p.vitality,
+            ];
+            statsChartInstance.update();
+          }
+        };
+
+        initCharts();
       });
     </script>
   </body>

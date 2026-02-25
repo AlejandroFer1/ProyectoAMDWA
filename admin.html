@@ -1,0 +1,273 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Solo Leveling - Sistema (Modo Arquitecto)</title>
+    <link rel="stylesheet" href="css/style.css" />
+    <link
+      rel="icon"
+      type="image/png"
+      href="img/logo_app_proyecto__1_-removebg-preview.png"
+    />
+    <style>
+      /* Admin Specific Inline Styles */
+      body {
+        background-color: #050505;
+      }
+      .admin-header {
+        padding: 100px 0 50px;
+        background: linear-gradient(to bottom, #110000, #050505);
+        text-align: center;
+        border-bottom: 2px solid var(--color-primary);
+      }
+      .admin-title {
+        color: var(--color-primary);
+        font-family: var(--font-heading);
+        text-shadow: 0 0 20px var(--color-primary);
+        letter-spacing: 3px;
+        text-transform: uppercase;
+      }
+      .container-admin {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 40px 20px;
+      }
+      .users-table-wrapper {
+        background: rgba(20, 20, 20, 0.9);
+        border: 1px solid var(--color-primary);
+        border-radius: 8px;
+        overflow: hidden;
+        margin-top: 30px;
+        box-shadow: 0 0 30px rgba(138, 43, 226, 0.2);
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        color: white;
+      }
+      th,
+      td {
+        padding: 15px;
+        text-align: left;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      }
+      th {
+        background-color: rgba(138, 43, 226, 0.2);
+        color: var(--color-primary);
+        text-transform: uppercase;
+        font-size: 0.9rem;
+        letter-spacing: 1px;
+      }
+      tr:hover {
+        background-color: rgba(255, 255, 255, 0.05);
+      }
+      .btn-small {
+        padding: 5px 10px;
+        font-size: 0.8rem;
+        margin-right: 5px;
+      }
+      .btn-danger {
+        background-color: #d32f2f;
+        color: white;
+        border: 1px solid #ff5252;
+      }
+      .btn-danger:hover {
+        background-color: #ff5252;
+        box-shadow: 0 0 10px #ff5252;
+      }
+      .btn-edit {
+        background-color: #2196f3;
+        color: white;
+        border: 1px solid #64b5f6;
+      }
+      .btn-edit:hover {
+        background-color: #64b5f6;
+        box-shadow: 0 0 10px #64b5f6;
+      }
+
+      /* Admin Modal */
+      .modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.85);
+        backdrop-filter: blur(5px);
+        z-index: 2000;
+        display: none;
+        align-items: center;
+        justify-content: center;
+      }
+      .modal-overlay.active {
+        display: flex;
+      }
+      .sl-modal {
+        background: rgba(10, 10, 20, 0.95);
+        border: 1px solid var(--color-primary);
+        box-shadow: 0 0 30px rgba(138, 43, 226, 0.3);
+        width: 90%;
+        max-width: 500px;
+        padding: 30px;
+        border-radius: 8px;
+        position: relative;
+      }
+      .sl-modal h2 {
+        color: var(--color-primary);
+        margin-bottom: 20px;
+      }
+      .form-group {
+        margin-bottom: 15px;
+      }
+      .form-group label {
+        display: block;
+        color: var(--color-text-muted);
+        margin-bottom: 5px;
+      }
+      .form-group input,
+      .form-group select {
+        width: 100%;
+        padding: 10px;
+        background: rgba(0, 0, 0, 0.5);
+        border: 1px solid #333;
+        color: white;
+        border-radius: 4px;
+      }
+      .modal-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+        margin-top: 20px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- Navbar Admin -->
+    <header>
+      <div class="container">
+        <nav>
+          <a href="index.html" class="logo-link">
+            <img
+              src="img/logo_app_proyecto__1_-removebg-preview.png"
+              alt="Solo Leveling Logo"
+              class="logo"
+            />
+            <span
+              style="
+                color: var(--color-primary);
+                margin-left: 10px;
+                font-weight: bold;
+              "
+              >MODO ARQUITECTO</span
+            >
+          </a>
+          <ul class="nav-links">
+            <li><a href="perfil.html">Volver al Perfil</a></li>
+            <li><a href="#" id="btn-logout-admin">Cerrar Sesión</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <section class="admin-header">
+      <h1 class="admin-title">Panel Base de Datos del Sistema</h1>
+      <p style="color: #ccc">
+        Gestión activa de todos los cazadores registrados.
+      </p>
+    </section>
+
+    <div class="container-admin">
+      <div class="users-table-wrapper">
+        <table id="users-table">
+          <thead>
+            <tr>
+              <th>ID del Cazador</th>
+              <th>Nombre (Username)</th>
+              <th>Clase</th>
+              <th>Rango</th>
+              <th>Nivel</th>
+              <th>EXP</th>
+              <th>Acciones del Sistema</th>
+            </tr>
+          </thead>
+          <tbody id="users-tbody">
+            <tr>
+              <td colspan="7" style="text-align: center; padding: 20px">
+                Cargando jugadores en la red...
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Modal Editar Usuario -->
+    <div id="edit-modal" class="modal-overlay">
+      <div class="sl-modal">
+        <h2>Editar Estadísticas</h2>
+        <form id="edit-user-form">
+          <input type="hidden" id="edit-id" />
+          <div class="form-group">
+            <label>Nombre de Usuario</label>
+            <input type="text" id="edit-username" disabled />
+          </div>
+          <div class="form-group">
+            <label>Nivel</label>
+            <input type="number" id="edit-level" min="1" required />
+          </div>
+          <div class="form-group">
+            <label>Experiencia (XP)</label>
+            <input type="number" id="edit-exp" min="0" required />
+          </div>
+          <div class="form-group">
+            <label>Rango Manual</label>
+            <select id="edit-rank">
+              <option value="E">E</option>
+              <option value="D">D</option>
+              <option value="C">C</option>
+              <option value="B">B</option>
+              <option value="A">A</option>
+              <option value="S">S</option>
+            </select>
+          </div>
+          <div
+            style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px"
+          >
+            <div class="form-group">
+              <label>STR (Fuerza)</label>
+              <input type="number" id="edit-str" min="0" required />
+            </div>
+            <div class="form-group">
+              <label>AGI (Agilidad)</label>
+              <input type="number" id="edit-agi" min="0" required />
+            </div>
+            <div class="form-group">
+              <label>VIT (Vitalidad)</label>
+              <input type="number" id="edit-vit" min="0" required />
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Estado de Suscripción</label>
+            <select id="edit-premium">
+              <option value="false">Usuario Estándar (No Premium)</option>
+              <option value="true">Suscripción Monarca (Premium)</option>
+            </select>
+          </div>
+          <div class="modal-actions">
+            <button type="button" class="btn" onclick="closeEditModal()">
+              Cancelar
+            </button>
+            <button type="submit" class="btn btn-accent">
+              Guardar Cambios
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Script Admin -->
+    <script type="module" src="js/admin.js"></script>
+  </body>
+</html>

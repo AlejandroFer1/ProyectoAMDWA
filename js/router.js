@@ -2,6 +2,7 @@ import { Views } from "./views.js";
 import { registerUser, logoutUser } from "./auth.js";
 import { supabase } from "./supabase-client.js";
 import { RoutineGenerator } from "./generator.js";
+import { Rewards } from "./rewards.js";
 
 // Setup Router
 export function initRouter() {
@@ -108,7 +109,8 @@ function setupRegisterLogic() {
 
       const success = await registerUser(email, password, userData);
       if (success) {
-        navigateTo("#profile");
+        // Redirigir al pago inmediatamente al registrarse (ya que is_premium es false por defecto)
+        window.location.href = "pago.html";
       }
     });
   }
@@ -135,7 +137,19 @@ function setupLoginLogic() {
         return;
       }
 
-      navigateTo("#profile");
+      // Verificar estatus premium
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("is_premium")
+        .eq("id", data.user.id)
+        .single();
+
+      if (profile && profile.is_premium) {
+        navigateTo("#profile");
+      } else {
+        // Redirigir al pago si no es premium
+        window.location.href = "pago.html";
+      }
     });
   }
   initAnimations();
@@ -185,44 +199,28 @@ async function setupProfileLogic() {
   document.getElementById("player-job").textContent =
     profile.hunter_class !== "Civilian" ? profile.hunter_class : jobTitle;
 
-  // Generator Button
-  const btn = document.getElementById("generate-quest-btn");
-  if (btn) {
-    btn.addEventListener("click", async () => {
-      const questBox = document.getElementById("daily-quest");
-      const questContent = document.getElementById("quest-content");
-      questContent.innerHTML = "<p>Invocando el sistema...</p>";
-      questBox.style.display = "block";
+  // Rewards Logic en Router
+  const rewardsPanel = document.getElementById("rewards-panel");
+  if (rewardsPanel) {
+    const benefits = Rewards.getRankBenefits(profile.rank || "E");
+    rewardsPanel.style.display = "block";
+    const rewardMessage = document.getElementById("reward-message");
+    const couponContainer = document.getElementById("reward-coupon-container");
+    const couponCode = document.getElementById("reward-coupon-code");
 
-      const generator = new RoutineGenerator(profile);
-      const quest = await generator.generateDailyQuest();
-
-      let html = `<h4 style="color:white; margin-bottom:10px;">${quest.title}</h4>`;
-      html += `<ul style="text-align:left; margin-bottom:15px;">`;
-
-      if (quest.exercises.length === 0) {
-        html += `<li>No se encontraron ejercicios adecuados para tu rango.</li>`;
-      } else {
-        quest.exercises.forEach((ex) => {
-          const loc =
-            ex.location === "Home" ? "🏠" : ex.location === "Gym" ? "🏋️" : "🔄";
-          html += `<li style="margin-bottom:8px; display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #333; padding-bottom:5px;">
-                        <div>
-                            <span style="margin-right:8px;">${loc}</span>
-                            <strong>${ex.name}</strong>
-                        </div>
-                        <span style="color:var(--color-primary)">${ex.sets} x ${ex.reps}</span>
-                    </li>`;
-        });
-      }
-      html += `</ul>`;
-      html += `<p style="font-size:0.9rem; color:#aaa;">⚠️ <strong>Penalización:</strong> ${quest.penalty}</p>`;
-
-      questContent.innerHTML = html;
-      questBox.classList.remove("visible");
-      setTimeout(() => questBox.classList.add("visible"), 50);
-    });
+    if (rewardMessage) {
+      rewardMessage.innerHTML = `<span style="color: ${benefits.color}; font-weight: bold;">Rango ${profile.rank || "E"}:</span> ${benefits.message}`;
+    }
+    if (benefits.couponCode && couponContainer && couponCode) {
+      couponContainer.style.display = "flex";
+      couponCode.textContent = benefits.couponCode;
+      couponCode.style.color = benefits.color;
+    } else if (couponContainer) {
+      couponContainer.style.display = "none";
+    }
   }
+
+  // El botón de generación y la lógica de misiones se gestionan nativamente en perfil.html
 
   initAnimations();
 }
