@@ -958,7 +958,7 @@
           .addEventListener("click", async () => {
             if (profile.is_premium !== true) {
               alert(
-                "🔒 ACCESO DENEGADO.\\n\\nEl suministro de Pociones está reservado exclusivamente para cazadores con Licencia Monarca. Adquiere tu licencia para sanar tu fatiga al instante.",
+                "🔒 ACCESO DENEGADO.\n\nEl suministro de Pociones está reservado exclusivamente para cazadores con Licencia Monarca. Adquiere tu licencia para sanar tu fatiga al instante.",
               );
               return;
             }
@@ -985,7 +985,7 @@
               profile.fatigue = 0;
               updateUI(profile);
               alert(
-                "✨ Te has bebido la Poción del Monarca.\\nTu cuerpo se siente revigorizado, ¡Fatiga al 0%!",
+                "✨ Te has bebido la Poción del Monarca.\nTu cuerpo se siente revigorizado, ¡Fatiga al 0%!",
               );
             }
           });
@@ -1201,7 +1201,7 @@
             // Los no premium solo pueden generar 1 al día
             if (!isActuallyPremium && currentCount >= 1) {
               alert(
-                "🔒 LÍMITE DE MISIÓN DIARIA.\\n\\nLos cazadores de rango estándar solo pueden generar una misión por día.\\n\\n¡Consigue la Licencia Monarca para entrenamientos ilimitados!",
+                "🔒 LÍMITE DE MISIÓN DIARIA.\n\nLos cazadores de rango estándar solo pueden generar una misión por día.\n\n¡Consigue la Licencia Monarca para entrenamientos ilimitados!",
               );
               window.location.href = "pago.html";
               return;
@@ -1209,7 +1209,7 @@
 
             if ((profile.fatigue || 0) >= 100) {
               alert(
-                "⚠️ ¡ESTÁS AGOTADO! (Fatiga ≥ 100%)\\n\\nNo puedes realizar más misiones hasta que descanses.",
+                "⚠️ ¡ESTÁS AGOTADO! (Fatiga ≥ 100%)\n\nNo puedes realizar más misiones hasta que descanses.",
               );
               return;
             }
@@ -1218,7 +1218,7 @@
             const activeQuest = await generator.checkTodayQuest();
             if (activeQuest && !activeQuest.is_completed) {
               alert(
-                "⚠️ EL SISTEMA INFORMA:\\n\\nYa tienes una misión diaria activa. ¡Debes completar tu entrenamiento actual antes de solicitar uno nuevo!",
+                "⚠️ EL SISTEMA INFORMA:\n\nYa tienes una misión diaria activa. ¡Debes completar tu entrenamiento actual antes de solicitar uno nuevo!",
               );
               return;
             }
@@ -1324,16 +1324,16 @@
                 },
               ]);
 
-              let msg = `¡MISIÓN COMPLETADA!\\n\\n+${gainedFromTask} XP\\n+${fatigueChange}% Fatiga\\n`;
+              let msg = `¡MISIÓN COMPLETADA!\n\n+${gainedFromTask} XP\n+${fatigueChange}% Fatiga\n`;
               if (statChange.strength !== 0)
-                msg += `Fuerza: ${statChange.strength > 0 ? "+" : ""}${statChange.strength}\\n`;
+                msg += `Fuerza: ${statChange.strength > 0 ? "+" : ""}${statChange.strength}\n`;
               if (statChange.agility !== 0)
-                msg += `Agilidad: ${statChange.agility > 0 ? "+" : ""}${statChange.agility}\\n`;
+                msg += `Agilidad: ${statChange.agility > 0 ? "+" : ""}${statChange.agility}\n`;
               if (statChange.vitality !== 0)
-                msg += `Vitalidad: ${statChange.vitality > 0 ? "+" : ""}${statChange.vitality}\\n`;
+                msg += `Vitalidad: ${statChange.vitality > 0 ? "+" : ""}${statChange.vitality}\n`;
 
               if (newRank !== profile.rank)
-                msg += `\\n¡RANGO ACTUALIZADO: ${newRank}!`;
+                msg += `\n¡RANGO ACTUALIZADO: ${newRank}!`;
 
               alert(msg);
 
