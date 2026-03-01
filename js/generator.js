@@ -227,7 +227,56 @@ export class RoutineGenerator {
     let sets = 3;
     let reps = "10";
 
-    // Filter Logic based on Focus
+    // --- RECOMENDACIÓN INTELIGENTE: Detectar Debilidad ---
+    const strength = this.user.strength || 10;
+    const agility = this.user.agility || 10;
+    const vitality = this.user.vitality || 10;
+
+    let lowestStat = "Strength";
+    let lowestValue = strength;
+
+    if (agility < lowestValue) {
+      lowestStat = "Agility";
+      lowestValue = agility;
+    }
+    if (vitality < lowestValue) {
+      // Preferimos Cardio/Stamina para Vitalidad
+      lowestStat = "Vitality";
+      lowestValue = vitality;
+    }
+
+    // Buscar 1 ejercicio recomendado según la debilidad
+    let recommendedExercise = null;
+    let recommendedType = "Strength"; // Default if Strength is lowest
+    if (lowestStat === "Agility") recommendedType = "Explosive";
+    // Agility maps to Explosive or Cardio, let's use Explosive or Cardio
+    if (lowestStat === "Vitality") recommendedType = "Stamina";
+    // Vitality maps to Stamina or Core
+
+    const potentialRecommendations = exercises.filter((ex) => {
+      if (lowestStat === "Strength") return ex.type === "Strength";
+      if (lowestStat === "Agility")
+        return ex.type === "Explosive" || ex.type === "Cardio";
+      if (lowestStat === "Vitality")
+        return ex.type === "Stamina" || ex.muscle_group === "Core";
+      return false;
+    });
+
+    if (potentialRecommendations.length > 0) {
+      // Coger uno al azar
+      recommendedExercise =
+        potentialRecommendations[
+          Math.floor(Math.random() * potentialRecommendations.length)
+        ];
+      // Marcamos el flag para el renderizado
+      recommendedExercise = {
+        ...recommendedExercise,
+        is_recommendation: true,
+        recommended_for: lowestStat,
+      };
+    }
+
+    // --- Filter Logic based on Focus ---
     if (questFocus === "Strength" || questFocus === "strength") {
       title = `Entrenamiento de Poder [Rango ${activeRank}]`;
       routine = exercises
@@ -297,6 +346,25 @@ export class RoutineGenerator {
       reps = "10-12";
     }
 
+    // Agregar la recomendación si no está ya incluida
+    if (recommendedExercise) {
+      const alreadyIncluded = routine.some(
+        (ex) => ex.exercise_id === recommendedExercise.exercise_id,
+      );
+      if (!alreadyIncluded) {
+        routine.unshift(recommendedExercise); // Lo ponemos primero
+      } else {
+        // Find and mark it
+        const idx = routine.findIndex(
+          (ex) => ex.exercise_id === recommendedExercise.exercise_id,
+        );
+        if (idx !== -1) {
+          routine[idx].is_recommendation = true;
+          routine[idx].recommended_for = lowestStat;
+        }
+      }
+    }
+
     // If 'Active Rank' > 'Base Rank', increase intensity
     if (activeRank !== (this.user.rank || "E")) {
       title += " (🔥 SOBRECARGA)";
@@ -310,6 +378,8 @@ export class RoutineGenerator {
         sets: sets,
         reps: this.calculateReps(ex, this.getRankMultiplier(activeRank)),
         location: ex.location || "Both",
+        is_recommendation: ex.is_recommendation || false,
+        recommended_for: ex.recommended_for || null,
       })),
       reward: "Recuperación de Estado",
       penalty: "Castigo: 4 horas de supervivencia",

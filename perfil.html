@@ -1126,6 +1126,11 @@
 
               window.currentQuestExercises = currentQuestExercises;
 
+              let recommendationTag = "";
+              if (ex.is_recommendation) {
+                recommendationTag = `<div style="background: rgba(138, 43, 226, 0.2); border: 1px solid var(--color-primary); color: #fff; padding: 3px 8px; border-radius: 4px; font-size: 0.75rem; margin-top: 5px; display: inline-block;">🎯 Recomendación del Sistema (${ex.recommended_for})</div>`;
+              }
+
               html += `<li style="margin-bottom:15px; border-bottom:1px solid #333; padding-bottom:10px;">
                             <div style="display:flex; align-items:center;">
                                 <input type="checkbox" id="ex-${index}" data-index="${index}" class="hunter-checkbox" ${disabledAttr}>
@@ -1135,6 +1140,7 @@
                                         <span style="color:var(--color-primary)">${ex.sets} x ${ex.reps}</span>
                                     </div>
                                     <small style="color:#aaa;">Rango: ${ex.rank} | ${ex.type}</small>
+                                    ${recommendationTag}
                                     <div style="margin-top:5px;">
                                         <button onclick="viewGuide(${index})" style="background:none; border:1px solid #555; color:var(--color-accent); cursor:pointer; font-size:0.85rem; padding:4px 10px; border-radius:3px; transition:all 0.3s;">
                                             📷 Ver Guía / Info
@@ -1204,6 +1210,15 @@
             if ((profile.fatigue || 0) >= 100) {
               alert(
                 "⚠️ ¡ESTÁS AGOTADO! (Fatiga ≥ 100%)\\n\\nNo puedes realizar más misiones hasta que descanses.",
+              );
+              return;
+            }
+
+            // Comprobar si ya hay una misión activa sin terminar
+            const activeQuest = await generator.checkTodayQuest();
+            if (activeQuest && !activeQuest.is_completed) {
+              alert(
+                "⚠️ EL SISTEMA INFORMA:\\n\\nYa tienes una misión diaria activa. ¡Debes completar tu entrenamiento actual antes de solicitar uno nuevo!",
               );
               return;
             }
